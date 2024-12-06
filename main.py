@@ -1,4 +1,5 @@
 import torch
+import platform as pl
 from torch import optim
 from code.models import CNN
 # Learning
@@ -9,7 +10,10 @@ from code.unlearning.unlearning_train import collaborative_unlearning, reciproca
 from code.unlearning.unlearning_utils import unlearning_evaluate_model, unlearning_get_cifar10_dataloaders
 
 # Configurazione
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if pl.system() == "Darwin":
+    device = torch.device("mps" if torch.mps.is_available() else "cpu")
+else:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Modelli
 student_model = CNN(num_classes=10, batch_size=64).to(device)

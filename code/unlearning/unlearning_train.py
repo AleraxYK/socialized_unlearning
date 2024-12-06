@@ -47,7 +47,7 @@ def collaborative_unlearning(epoch, num_epochs, student_model, teacher_models, t
     # Calculate average loss for the epoch
     avg_target_loss = running_target_loss / len(target_loader)
     # Print loss for this epoch
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average TARGET Loss: {avg_target_loss:.4f}")
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average TARGET Loss: {avg_target_loss:.4f}")
     
     loop_non_target = tqdm(non_target_loader, total=len(non_target_loader), leave=True)
 
@@ -77,7 +77,7 @@ def collaborative_unlearning(epoch, num_epochs, student_model, teacher_models, t
     avg_non_target_loss = running_non_target_loss / len(non_target_loader)
 
     # Print loss for this epoch
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average NON TARGET Loss: {avg_non_target_loss:.4f}")
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average NON TARGET Loss: {avg_non_target_loss:.4f}")
 
     #### VALIDATION #### TODOOOOOOOOOO
 
@@ -118,7 +118,7 @@ def reciprocal_unlearning(epoch, num_epochs, teacher_model, student_model, targe
     # Calculate average loss for the epoch
     avg_target_loss = running_target_loss / len(target_loader)
     # Print loss for this epoch
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average TARGET Loss: {avg_target_loss:.4f}")
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average TARGET Loss: {avg_target_loss:.4f}")
     
     loop_non_target = tqdm(non_target_loader, total=len(non_target_loader), leave=True)
 
@@ -148,7 +148,7 @@ def reciprocal_unlearning(epoch, num_epochs, teacher_model, student_model, targe
     avg_non_target_loss = running_non_target_loss / len(non_target_loader)
 
     # Print loss for this epoch
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average NON TARGET Loss: {avg_non_target_loss:.4f}")
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average NON TARGET Loss: {avg_non_target_loss:.4f}")
 
-    #### VALIDATION #### TODOOOOOOOOO
+    #### VALIDATION #### TODO
 

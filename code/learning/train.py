@@ -41,14 +41,14 @@ def collaborative_collaboration(epoch, num_epochs, best_loss, student_model, tea
         running_loss += loss.item()
 
         # Update progress bar with loss and epoch information
-        loop.set_description(f"Epoch [{epoch+1}]")
+        loop.set_description(f"\033[34mEpoch [{epoch+1}]\033[0m")
         loop.set_postfix(loss=loss.item())
     
     # Calculate average loss for the epoch
     avg_loss = running_loss / len(train_loader)
 
     # Print loss for this epoch
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average Loss: {avg_loss:.4f}")
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
 
     #### VALIDATION ####
     student_model.eval()
@@ -131,14 +131,14 @@ def reciprocal_altruism(epoch, num_epochs, best_loss, teacher_idx, teacher_model
         running_loss += loss.item()
 
         # Update progress bar with loss and epoch information
-        loop.set_description(f"Epoch [{epoch+1}]")
+        loop.set_description(f"\033[0mEpoch [{epoch+1}]\033[0m")
         loop.set_postfix(loss=loss.item())
     
     # Calculate average loss for the epoch
     avg_loss = running_loss / len(train_loader)
 
     # Print loss for this epoch
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average Loss: {avg_loss:.4f}")
+    tqdm.write(f"\033[0mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
 
     #### VALIDATION ####
     teacher_model.eval()
