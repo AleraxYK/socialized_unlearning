@@ -2,6 +2,28 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class CNN(nn.Module):
+    """
+    # Convolutional Neural Network (CNN) for Image Classification
+
+    This **CNN** class implements a convolutional neural network (CNN) architecture with 
+    three convolutional layers, batch normalization, pooling, dropout, and fully connected layers. 
+    It is designed for image classification tasks, typically for datasets like CIFAR-10.
+
+    Args:
+        - num_classes (int): Number of output classes for classification (default is 10).
+        - batch_size (int): The batch size used for training (default is 64).
+
+    Attributes:
+        - conv1, conv2, conv3: Convolutional layers that process the input image.
+        - bn1, bn2, bn3: Batch normalization layers to normalize the activations.
+        - pool1, pool2, pool3: Pooling layers to reduce spatial dimensions.
+        - dropout1, dropout2, dropout3: Dropout layers to prevent overfitting.
+        - fc1, fc2: Fully connected layers for classification.
+
+    Methods:
+        - forward(x): Defines the forward pass of the network.
+    """
+
     def __init__(self, num_classes=10, batch_size=64):
         super(CNN, self).__init__()
         self.batch_size = batch_size
@@ -27,6 +49,21 @@ class CNN(nn.Module):
         self.fc2 = nn.Linear(32, num_classes)
 
     def forward(self, x):
+        """
+        # Forward Pass
+
+        The forward pass applies the following operations in sequence:
+        1. Convolution -> Batch Normalization -> ReLU -> Pooling -> Dropout (conv1)
+        2. Convolution -> Batch Normalization -> ReLU -> Pooling -> Dropout (conv2)
+        3. Convolution -> Batch Normalization -> ReLU -> Adaptive Pooling -> Dropout (conv3)
+        4. Flatten the output and apply fully connected layers (fc1, fc2).
+
+        Args:
+            - x (tensor): The input tensor representing the images.
+
+        Returns:
+            - x (tensor): The output tensor after the forward pass.
+        """
         
         # Apply conv1, batch norm, relu, pooling, and dropout
         x = F.relu(self.bn1(self.conv1(x)))

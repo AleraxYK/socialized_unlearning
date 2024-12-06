@@ -4,7 +4,32 @@ import os
 from .losses import energy_alignment_loss, knowledge_distillation_loss
 
 # Collaborative Collaboration
-def collaborative_collaboration(epoch, num_epochs, best_loss, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, lambda_1=1.0, lambda_2=0.1, delta=-20, device="cpu"):
+def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2=0.1, delta=-20, device="cpu") -> float:
+    """
+    # Collaborative Collaboration Training Function
+
+    The **collaborative_collaboration** function trains a student model collaboratively with multiple teacher models 
+    using a combination of cross-entropy loss, knowledge distillation loss, and energy alignment loss.
+
+    Args:
+        - epoch (int): Current epoch number.
+        - num_epochs (int): Total number of epochs.
+        - best_loss (float): Best validation loss recorded so far.
+        - student_model: The student model to be trained.
+        - teacher_models: A list of pre-trained teacher models.
+        - train_loader: DataLoader for training data.
+        - val_loader: DataLoader for validation data.
+        - optimizer: Optimizer for updating the model parameters.
+        - criterion_ce: Cross-entropy loss function.
+        - lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
+        - lambda_2 (float): Weight for the energy alignment loss term (default is 0.1).
+        - delta (float): Desired energy alignment value (default is -20).
+        - device (str): Device for training ('cpu' or 'cuda').
+
+    Returns:
+        - float: The updated best validation loss.
+    """
+    
     student_model.train()
     running_loss = 0
 
@@ -95,7 +120,34 @@ def collaborative_collaboration(epoch, num_epochs, best_loss, student_model, tea
         
 
 # Reciprocal Altruism
-def reciprocal_altruism(epoch, num_epochs, best_loss, teacher_idx, teacher_model, student_model, train_loader, val_loader, optimizer, criterion_ce, lambda_1=1.0, lambda_2=0.1, delta=-20, device="cpu"):
+def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta: float=-20, device: str="cpu") -> float:
+    """
+    # Reciprocal Altruism Training Function
+
+    The **reciprocal_altruism** function trains a teacher model in a reciprocal setup 
+    where knowledge is transferred from a pre-trained student model to improve the teacher's performance. 
+    This involves a combination of cross-entropy loss, knowledge distillation loss, 
+    and energy alignment loss.
+
+    Args:
+        - epoch (int): Current epoch number.
+        - num_epochs (int): Total number of epochs.
+        - best_loss (float): Best validation loss recorded so far.
+        - teacher_idx (int): Index of the current teacher model.
+        - teacher_model: The teacher model being trained.
+        - student_model: The pre-trained student model.
+        - train_loader: DataLoader for training data.
+        - val_loader: DataLoader for validation data.
+        - optimizer: Optimizer for updating the teacher model parameters.
+        - criterion_ce: Cross-entropy loss function.
+        - lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
+        - lambda_2 (float): Weight for the energy alignment loss term (default is 0.1).
+        - delta (float): Desired energy alignment value (default is -20).
+        - device (str): Device for training ('cpu' or 'cuda').
+
+    Returns:
+        - float: The updated best validation loss.
+    """
     teacher_model.train()
     running_loss = 0
 

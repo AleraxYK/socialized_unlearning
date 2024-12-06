@@ -2,7 +2,23 @@ import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-def get_cifar10_dataloaders(batch_size=64):
+def get_cifar10_dataloaders(batch_size: int=64) -> tuple:
+    """
+    # CIFAR-10 DataLoader Function
+
+    The **get_cifar10_dataloaders** function prepares DataLoaders for training, validation, 
+    and testing using the CIFAR-10 dataset. The dataset is normalized and split into 
+    training, validation, and testing subsets.
+
+    Args:
+        - batch_size (int): Batch size for the DataLoaders (default is 64).
+
+    Returns:
+        - tuple: A tuple containing three DataLoaders:
+            - train_loader: DataLoader for the training dataset.
+            - test_loader: DataLoader for the testing dataset.
+            - val_loader: DataLoader for the validation dataset.
+    """
     # Trasformazioni per CIFAR-10
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -23,7 +39,19 @@ def get_cifar10_dataloaders(batch_size=64):
 
     return train_loader, test_loader, val_loader
 
-def evaluate_model(model, dataloader):
+def evaluate_model(model, dataloader) -> float:
+    """
+    # Model Evaluation Function
+
+    The **evaluate_model** function calculates the accuracy of a given model on a specified dataset.
+
+    Args:
+        - model: The PyTorch model to be evaluated.
+        - dataloader: A DataLoader containing the dataset for evaluation.
+
+    Returns:
+        - float: The accuracy of the model on the dataset, expressed as a percentage.
+    """
     model.eval()
     correct, total = 0, 0
     with torch.no_grad():
