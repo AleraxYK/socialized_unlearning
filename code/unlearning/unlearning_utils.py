@@ -18,10 +18,12 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
           for unlearning. If None, no filtering is done, and the full CIFAR-10 dataset is used.
 
     Returns:
-        - target_loader (DataLoader): A DataLoader for the target classes if `target_classes` is provided.
-        - non_target_loader (DataLoader): A DataLoader for the non-target classes if `target_classes` is provided.
-        - train_loader (DataLoader): A DataLoader for the training set if no filtering is applied.
-        - test_loader (DataLoader): A DataLoader for the test set if no filtering is applied.
+        - target_train_loader (DataLoader): A DataLoader for the target classes.
+        - non_target_train_loader (DataLoader): A DataLoader for the non-target classes.
+        - target_test_loader (DataLoader): A DataLoader for the target classes.
+        - non_target_test_loader (DataLoader): A DataLoader for the non-target classes.
+        - non_target_val_loader (DataLoader): A DataLoader for the non-target classes.
+
     """
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -32,17 +34,23 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
     train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
     test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 
-    # Filtrare classi target e non target
-    if target_classes is not None:
-        target_data = filter_dataset(train_dataset, target_classes, keep=True)
-        non_target_data = filter_dataset(train_dataset, target_classes, keep=False)
-        target_loader = DataLoader(target_data, batch_size=batch_size, shuffle=True)
-        non_target_loader = DataLoader(non_target_data, batch_size=batch_size, shuffle=True)
-        return target_loader, non_target_loader
-    else:
-        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-        test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-        return train_loader, test_loader
+    # Filter target and non target classes
+    # TRAIN
+    target_train_data = filter_dataset(train_dataset, target_classes, keep=True)
+    non_target_train_data = filter_dataset(train_dataset, target_classes, keep=False)
+    # TEST
+    non_target_test_data = filter_dataset(test_dataset, target_classes, keep=False)
+    # VALIDATION
+    non_target_val_data, non_target_test_data = torch.utils.data.random_split(non_target_test_data, [2000, 8000])
+
+    target_train_loader = DataLoader(target_train_data, batch_size=batch_size, shuffle=True)
+    non_target_train_loader = DataLoader(non_target_train_data, batch_size=batch_size, shuffle=True)
+
+    non_target_test_loader = DataLoader(non_target_test_data, batch_size=batch_size, shuffle=True)
+
+    non_target_val_loader = DataLoader(non_target_val_data, batch_size=batch_size, shuffle=True)
+
+    return ((target_train_loader, non_target_train_loader), non_target_test_loader, non_target_val_loader)
 
 
 # Filter dataset to exclude classes
