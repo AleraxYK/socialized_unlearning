@@ -1,8 +1,10 @@
+import numpy as np
 import torch
 import torch.utils
 import torch.utils.data
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Subset
+
 
 # Load CIFAR-10 Dataset
 def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=None) -> tuple[DataLoader, DataLoader]:
@@ -38,10 +40,12 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
     # TRAIN
     target_train_data = filter_dataset(train_dataset, target_classes, keep=True)
     non_target_train_data = filter_dataset(train_dataset, target_classes, keep=False)
+    
     # TEST
     non_target_test_data = filter_dataset(test_dataset, target_classes, keep=False)
+
     # VALIDATION
-    non_target_val_data, non_target_test_data = torch.utils.data.random_split(non_target_test_data, [1500, 8000])
+    non_target_val_data, non_target_test_data = torch.utils.data.random_split(non_target_test_data, [1500, 6500])
 
     target_train_loader = DataLoader(target_train_data, batch_size=batch_size, shuffle=True)
     non_target_train_loader = DataLoader(non_target_train_data, batch_size=batch_size, shuffle=True)
@@ -69,11 +73,15 @@ def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, keep
     Returns:
         - torch.utils.data.Subset: A subset of the original dataset containing only the target or non-target classes.
     """
-    indices = [
-        i for i, (_, label) in enumerate(dataset)
-        if (label in target_classes) == keep
-    ]
-    return Subset(dataset, indices)
+    labels = np.array([label for _, label in dataset])
+
+    if keep:
+        indices = [i for i, label in enumerate(labels) if label in target_classes]
+    else:
+        indices = [i for i, label in enumerate(labels) if label not in target_classes]
+
+    filtered_dataset = torch.utils.data.Subset(dataset, indices)
+    return filtered_dataset
 
 # Evaluate the model
 def unlearning_evaluate_model(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader) -> float:

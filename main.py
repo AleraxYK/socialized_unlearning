@@ -56,37 +56,39 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
     
 
 if __name__=="__main__": 
-    choice = int(input("PRESS:\n0: Learning\n1: Unlearning"))
-    match(choice):
-        case 0: # LEARNING
-            # Models
-            student_learning_model = CNN(num_classes=10, batch_size=64).to(device)
-            teacher_learning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
+    # choice = int(input("PRESS:\n0: Learning\n1: Unlearning"))
+    # match(choice):
+    #     case 0: # LEARNING
+    #         # Models
+    #         student_learning_model = CNN(num_classes=10, batch_size=64).to(device)
+    #         teacher_learning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
 
-            # Optimizer and loss
-            optimizer_student = optim.Adam(student_learning_model.parameters(), lr=0.001)
-            optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_learning_models]
-            criterion_ce = torch.nn.CrossEntropyLoss()
+    #         # Optimizer and loss
+    #         optimizer_student = optim.Adam(student_learning_model.parameters(), lr=0.001)
+    #         optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_learning_models]
+    #         criterion_ce = torch.nn.CrossEntropyLoss()
 
-            num_epochs = 10
+    #         num_epochs = 10
 
-            socialized_learning(student_learning_model, teacher_learning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
+    #         socialized_learning(student_learning_model, teacher_learning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
 
-        case 1: # UNLEARNING
-            # Load student
-            student_unlearning_model = CNN(num_classes=10, batch_size=64).to(device)
-            student_unlearning_model.load_state_dict(torch.load("code/checkpoint/student_trained_model.pth", map_location="mps", weights_only=False))
-            # Load teachers
-            teacher_unlearning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
-            for idx in range(len(teacher_unlearning_models)):
-                teacher_unlearning_models[idx].load_state_dict(torch.load("code/checkpoint/teacher_"+str(idx)+"_trained_model.pth", map_location="mps", weights_only=False))
+    #     case 1: # UNLEARNING
+    #         # Load student
+    #         student_unlearning_model = CNN(num_classes=10, batch_size=64).to(device)
+    #         student_unlearning_model.load_state_dict(torch.load("code/checkpoint/student_trained_model.pth", map_location="mps", weights_only=False))
+    #         # Load teachers
+    #         teacher_unlearning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
+    #         for idx in range(len(teacher_unlearning_models)):
+    #             teacher_unlearning_models[idx].load_state_dict(torch.load("code/checkpoint/teacher_"+str(idx)+"_trained_model.pth", map_location="mps", weights_only=False))
             
-            # Optimizer and loss
-            optimizer_student = optim.Adam(student_unlearning_model.parameters(), lr=0.001)
-            optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_unlearning_models]
-            criterion_ce = torch.nn.CrossEntropyLoss()
+    #         # Optimizer and loss
+    #         optimizer_student = optim.Adam(student_unlearning_model.parameters(), lr=0.001)
+    #         optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_unlearning_models]
+    #         criterion_ce = torch.nn.CrossEntropyLoss()
 
-            num_epochs = 10
+    #         num_epochs = 10
             
-            socialized_unlearning(student_unlearning_model, teacher_unlearning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
+    #         socialized_unlearning(student_unlearning_model, teacher_unlearning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
+    target_classes = [0, 1]
+    dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=64, target_classes=target_classes)
 
