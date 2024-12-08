@@ -120,7 +120,7 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         
 
 # Reciprocal Altruism
-def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta: float=-20, device: str="cpu") -> float:
+def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta: float=-20, device: str="mps") -> float:
     """
     # Reciprocal Altruism Training Function
 

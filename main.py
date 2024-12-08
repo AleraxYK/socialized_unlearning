@@ -75,11 +75,11 @@ if __name__=="__main__":
         case 1: # UNLEARNING
             # Load student
             student_unlearning_model = CNN(num_classes=10, batch_size=64).to(device)
-            student_unlearning_model.load_state_dict(torch.load("./code/checkpoint/student_unlearning_trained_model.pth", map_location="cpu", weights_only=False))
+            student_unlearning_model.load_state_dict(torch.load("code/checkpoint/student_trained_model.pth", map_location="mps", weights_only=False))
             # Load teachers
             teacher_unlearning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
             for idx in range(len(teacher_unlearning_models)):
-                teacher_unlearning_models[idx].load_state_dict(torch.load("./code/checkpoint/teacher_"+str(idx)+"_unlearning_trained_model.pth", map_location="cpu", weights_only=False))
+                teacher_unlearning_models[idx].load_state_dict(torch.load("code/checkpoint/teacher_"+str(idx)+"_trained_model.pth", map_location="mps", weights_only=False))
             
             # Optimizer and loss
             optimizer_student = optim.Adam(student_unlearning_model.parameters(), lr=0.001)

@@ -3,7 +3,7 @@ from tqdm import tqdm
 import os
 from .unlearning_losses import unlearning_knowledge_distillation_loss, unlearning_energy_alignment_loss
 
-def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta_target: float=-5, delta_non_target: float=-20, device: str="cpu") -> tuple:
+def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta_target: float=-5, delta_non_target: float=-20, device: str="mps") -> tuple:
     """
     # Collaborative Unlearning
 
@@ -131,7 +131,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
 
 
-def reciprocal_unlearning(epoch: int, num_epochs: int, best_loss: float, teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta_target: float=-5, delta_non_target: float=-20, device: str="cpu") -> tuple:
+def reciprocal_unlearning(epoch: int, num_epochs: int, best_loss: float, teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta_target: float=-5, delta_non_target: float=-20, device: str="mps") -> tuple:
     """
     # Reciprocal Unlearning
 

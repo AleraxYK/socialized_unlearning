@@ -41,7 +41,7 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
     # TEST
     non_target_test_data = filter_dataset(test_dataset, target_classes, keep=False)
     # VALIDATION
-    non_target_val_data, non_target_test_data = torch.utils.data.random_split(non_target_test_data, [2000, 8000])
+    non_target_val_data, non_target_test_data = torch.utils.data.random_split(non_target_test_data, [1500, 8000])
 
     target_train_loader = DataLoader(target_train_data, batch_size=batch_size, shuffle=True)
     non_target_train_loader = DataLoader(non_target_train_data, batch_size=batch_size, shuffle=True)

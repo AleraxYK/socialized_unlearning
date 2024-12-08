@@ -30,7 +30,7 @@ def get_cifar10_dataloaders(batch_size: int=64) -> tuple:
     test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 
     #split test into test and validation
-    val_dataset, test_dataset = torch.utils.data.random_split(test_dataset, [2000, 8000])
+    val_dataset, test_dataset = torch.utils.data.random_split(test_dataset, [1500, 8000])
 
     # Dataloader
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
