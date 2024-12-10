@@ -14,8 +14,11 @@ def energy_alignment_loss(predictions, delta : float) -> float:
     Returns:
         - A scaled value representing the overall loss.
     """
-    energy = -torch.logsumexp(-predictions, dim=1)
-    return ((energy - delta) ** 2).mean()
+    with torch.no_grad():
+        energy_values = -torch.logsumexp(-predictions, dim=1)
+        delta = energy_values.mean().item()
+    
+    return torch.abs(energy_values - delta).mean()
 
 
 # Knowledge Distillation Loss
@@ -34,6 +37,7 @@ def knowledge_distillation_loss(student_output, teacher_output, temperature: flo
     Returns:
         - A scalar value representing the KL divergence loss between the student and teacher predictions.
     """
+
     soft_student = torch.log_softmax(student_output / temperature, dim=1)
     soft_teacher = torch.softmax(teacher_output / temperature, dim=1)
     return nn.KLDivLoss(reduction="batchmean")(soft_student, soft_teacher)

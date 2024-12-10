@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 import os
-from .unlearning_losses import unlearning_knowledge_distillation_loss, unlearning_energy_alignment_loss
+from .unlearning_losses import unlearning_knowledge_distillation_loss, unlearning_energy_alignment_loss, forget_kd_loss
 
 def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta_target: float=-5, delta_non_target: float=-20, device: str="mps") -> tuple:
     """
@@ -32,7 +32,6 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         - best_loss: Best Average loss for non-target samples over the epoch.
     """
     student_model.train()
-    running_target_loss = 0
     running_non_target_loss = 0
 
     loop_target = tqdm(target_train_loader, total=len(target_train_loader), leave=True)
@@ -63,14 +62,10 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         loss.backward()
         optimizer.step()
 
-        running_target_loss += loss.item()
-
         # Update progress bar
         loop_target.set_description(f"TARGET Epoch [{epoch+1}]")
-        loop_target.set_postfix(loss=loss.item())
-    
-    avg_target_loss = running_target_loss / len(target_train_loader)
-    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average TARGET Loss: {avg_target_loss:.4f}")
+
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]")
     
     loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
 
@@ -111,7 +106,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
             student_output = student_model(data)
 
             # Compute validation loss for target classes
-            loss_val_target = unlearning_energy_alignment_loss(student_output, delta_target)
+            loss_val_target = unlearning_energy_alignment_loss(student_output, delta_non_target)
             validation_loss += loss_val_target.item()
 
         avg_validation_loss = validation_loss / len(non_target_val_loader)
@@ -162,7 +157,6 @@ def reciprocal_unlearning(epoch: int, num_epochs: int, best_loss: float, teacher
         - best_loss: Best Average loss for non-target samples over the epoch.
     """
     teacher_model.train()
-    running_target_loss = 0
     running_non_target_loss = 0
 
     loop_target = tqdm(target_train_loader, total=len(target_train_loader), leave=True)
@@ -180,21 +174,17 @@ def reciprocal_unlearning(epoch: int, num_epochs: int, best_loss: float, teacher
             student_output = student_model(data)
 
         # Forgetting loss
-        loss_forget_kd = -unlearning_energy_alignment_loss(teacher_output, student_output)
+        loss_forget_kd = forget_kd_loss(teacher_output, student_output)
         loss_energy_target = unlearning_energy_alignment_loss(teacher_output, delta_target)
         loss = lambda_1 * loss_forget_kd + lambda_2 * loss_energy_target
 
         loss.backward()
         optimizer.step()
 
-        running_target_loss += loss.item()
-
         # Update progress bar
         loop_target.set_description(f"TARGET Epoch [{epoch+1}]")
-        loop_target.set_postfix(loss=loss.item())
-    
-    avg_target_loss = running_target_loss / len(target_train_loader)
-    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average TARGET Loss: {avg_target_loss:.4f}")
+
+    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]")
     
     loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
 
@@ -235,7 +225,7 @@ def reciprocal_unlearning(epoch: int, num_epochs: int, best_loss: float, teacher
             teacher_output = teacher_model(data)
 
             # Compute validation loss (target classes)
-            loss_val_target = unlearning_energy_alignment_loss(teacher_output, delta_target)
+            loss_val_target = unlearning_energy_alignment_loss(teacher_output, delta_non_target)
             validation_loss += loss_val_target.item()
 
         avg_validation_loss = validation_loss / len(non_target_val_loader)
@@ -246,8 +236,8 @@ def reciprocal_unlearning(epoch: int, num_epochs: int, best_loss: float, teacher
             # create directory if not exist
             os.makedirs("checkpoint", exist_ok=True)
             best_loss = avg_validation_loss
-            torch.save(student_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_unlearning_trained_model.pth")
+            torch.save(teacher_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_unlearning_trained_model.pth")
         elif avg_validation_loss < best_loss:
             best_loss = avg_validation_loss
-            torch.save(student_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_unlearning_trained_model.pth")
+            torch.save(teacher_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_unlearning_trained_model.pth")
     return best_loss

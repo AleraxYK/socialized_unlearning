@@ -27,14 +27,22 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
         - non_target_val_loader (DataLoader): A DataLoader for the non-target classes.
 
     """
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    # Dataset CIFAR-10
+    train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transforms.ToTensor)
+    images = np.stack([train_dataset[i][0] for i in range(len(train_dataset))])
+
+    # Compute the mean and standard deviation for each channel
+    mean = images.mean(axis=(0, 2, 3))
+    std = images.std(axis=(0, 2, 3))
+
+    # Define the augmentations for the training set
+    cifar_transforms = transforms.Compose([
+        transforms.ToTensor(),                    # Convert the image to a PyTorch tensor
+        transforms.Normalize(mean, std),          # Normalize the image channel
     ])
 
-    # Dataset CIFAR-10
-    train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
-    test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+    train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=cifar_transforms)
+    test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=cifar_transforms)
 
     # Filter target and non target classes
     # TRAIN

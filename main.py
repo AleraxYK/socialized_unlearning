@@ -1,7 +1,7 @@
 import torch
 import platform as pl
 from torch import optim
-from code.models import CNN
+from code.models import create_model
 # Learning
 from code.learning.train import collaborative_collaboration, reciprocal_altruism
 from code.learning.utils import get_cifar10_dataloaders, evaluate_model
@@ -19,7 +19,7 @@ def socialized_learning(student_model, teacher_models, optimizer_student, optimi
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
     # Dataset
-    train_loader, test_loader, val_loader = get_cifar10_dataloaders(batch_size=64)
+    train_loader, test_loader, val_loader = get_cifar10_dataloaders(batch_size=512)
     # Training loop
     for epoch in range(num_epochs):
         
@@ -34,14 +34,14 @@ def socialized_learning(student_model, teacher_models, optimizer_student, optimi
 
     # Evaluation
     print("Evaluating student model...")
-    evaluate_model(student_model, test_loader)
+    evaluate_model(student_model, test_loader, device)
 
 def socialized_unlearning(student_model, teacher_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs):
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
 
     target_classes = [0, 1]
-    dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=64, target_classes=target_classes)
+    dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
     target_train_loader, non_target_train_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1], dataset_loaders[2]
 
     for epoch in range(num_epochs):
@@ -51,44 +51,48 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
             best_teachers_losses[teacher_idx] = reciprocal_unlearning(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, device=device)
 
     print("Evaluating student model after unlearning...")
-    unlearning_evaluate_model(student_model, non_target_test_loader)
+    unlearning_evaluate_model(student_model, non_target_test_loader, device)
     print("Evaluating teachers models after unlearning...")
     
 
 if __name__=="__main__": 
-    # choice = int(input("PRESS:\n0: Learning\n1: Unlearning"))
-    # match(choice):
-    #     case 0: # LEARNING
-    #         # Models
-    #         student_learning_model = CNN(num_classes=10, batch_size=64).to(device)
-    #         teacher_learning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
+    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
+    match(choice):
+        case 0: # LEARNING
+            # Models
+            agents = [create_model() for _ in range(5)]
+            for idx in range(5):
+                agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', weights_only=True))
 
-    #         # Optimizer and loss
-    #         optimizer_student = optim.Adam(student_learning_model.parameters(), lr=0.001)
-    #         optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_learning_models]
-    #         criterion_ce = torch.nn.CrossEntropyLoss()
+            student_model = create_model()
+            student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth", weights_only=True))
 
-    #         num_epochs = 10
+            # Optimizer and loss
+            optimizer_student = optim.Adam(student_model.parameters(), lr=0.001)
+            optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.001) for idx in range(5)]
+            criterion_ce = torch.nn.CrossEntropyLoss()
 
-    #         socialized_learning(student_learning_model, teacher_learning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
+            num_epochs = 10
 
-    #     case 1: # UNLEARNING
-    #         # Load student
-    #         student_unlearning_model = CNN(num_classes=10, batch_size=64).to(device)
-    #         student_unlearning_model.load_state_dict(torch.load("code/checkpoint/student_trained_model.pth", map_location="mps", weights_only=False))
-    #         # Load teachers
-    #         teacher_unlearning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
-    #         for idx in range(len(teacher_unlearning_models)):
-    #             teacher_unlearning_models[idx].load_state_dict(torch.load("code/checkpoint/teacher_"+str(idx)+"_trained_model.pth", map_location="mps", weights_only=False))
+            socialized_learning(student_model, agents, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
+
+        # case 1: # UNLEARNING
+        #     # Load student
+        #     student_unlearning_model = CNN(num_classes=10, batch_size=64).to(device)
+        #     # student_unlearning_model.load_state_dict(torch.load("code/checkpoint/student_trained_model.pth", map_location="mps", weights_only=False))
+        #     student_unlearning_model.load_state_dict(torch.load("code/checkpoint/student_trained_model.pth", map_location="cpu", weights_only=False))
+        #     # Load teachers
+        #     teacher_unlearning_models = [CNN(num_classes=10, batch_size=64).to(device) for _ in range(2)]
+        #     for idx in range(len(teacher_unlearning_models)):
+        #         # teacher_unlearning_models[idx].load_state_dict(torch.load("code/checkpoint/teacher_"+str(idx)+"_trained_model.pth", map_location="mps", weights_only=False))
+        #         teacher_unlearning_models[idx].load_state_dict(torch.load("code/checkpoint/teacher_"+str(idx)+"_trained_model.pth", map_location="cpu", weights_only=False))
             
-    #         # Optimizer and loss
-    #         optimizer_student = optim.Adam(student_unlearning_model.parameters(), lr=0.001)
-    #         optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_unlearning_models]
-    #         criterion_ce = torch.nn.CrossEntropyLoss()
+        #     # Optimizer and loss
+        #     optimizer_student = optim.Adam(student_unlearning_model.parameters(), lr=0.001)
+        #     optimizer_teachers = [optim.Adam(model.parameters(), lr=0.001) for model in teacher_unlearning_models]
+        #     criterion_ce = torch.nn.CrossEntropyLoss()
 
-    #         num_epochs = 10
+        #     num_epochs = 2
             
-    #         socialized_unlearning(student_unlearning_model, teacher_unlearning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
-    target_classes = [0, 1]
-    dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=64, target_classes=target_classes)
+        #     socialized_unlearning(student_unlearning_model, teacher_unlearning_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
 

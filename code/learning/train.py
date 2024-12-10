@@ -2,9 +2,10 @@ import torch
 from tqdm import tqdm
 import os
 from .losses import energy_alignment_loss, knowledge_distillation_loss
+from .utils import feature_extractor, classifier_extractor
 
 # Collaborative Collaboration
-def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2=0.1, delta=-20, device="cpu") -> float:
+def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=0.1, lambda_2=0.1, delta=-20, device="cpu") -> float:
     """
     # Collaborative Collaboration Training Function
 
@@ -42,23 +43,36 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         # Student output
         student_output = student_model(data)
 
-        # Cross-entropy loss
+        # Cross-entropy loss (ground truth)
         loss_ce = criterion_ce(student_output, labels)
+        # print(f"CROSS ENTROPY LOSS: {loss_ce}")
 
-        # Distillation loss
+        # Knowledge distillation loss
         loss_kd = 0
         for teacher_model in teacher_models:
             teacher_model.eval()
             with torch.no_grad():
-                teacher_output = teacher_model(data)
-            loss_kd += knowledge_distillation_loss(student_output, teacher_output)
+                modified_input = feature_extractor(student_model, data)
+                teacher_output1 = classifier_extractor(teacher_model, modified_input)
+                teacher_output2 = teacher_model(data)
+                # teacher_output = teacher_model(data)
+            
+            # Compute knowledge distillation loss tra la predizione del teacher e dello studente
+            loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
+            # loss_kd += knowledge_distillation_loss(student_output, teacher_output)
+        # print(f"KD LOSS: {loss_kd}")
+
+        # Normalize la KD loss
+        loss_kd /= len(teacher_models)
 
         # Energy alignment loss
         loss_al = energy_alignment_loss(student_output, delta)
+        # print(f"ENERGY ALIGNMENT: {loss_al}")
 
         # Total loss
         loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
 
+        # Backpropagation and optimization
         loss.backward()
         optimizer.step()
         
@@ -66,14 +80,14 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         running_loss += loss.item()
 
         # Update progress bar with loss and epoch information
-        loop.set_description(f"\033[34mEpoch [{epoch+1}]\033[0m")
+        loop.set_description(f"\033[34mStudent learning Epoch [{epoch+1}]\033[0m")
         loop.set_postfix(loss=loss.item())
     
     # Calculate average loss for the epoch
     avg_loss = running_loss / len(train_loader)
 
     # Print loss for this epoch
-    tqdm.write(f"\033[34mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
+    tqdm.write(f"\033[34mStudent learning Epoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
 
     #### VALIDATION ####
     student_model.eval()
@@ -106,16 +120,16 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         # Calculate average loss for the epoch
         avg_val_loss = val_loss / len(val_loader)
 
-        print(f"Validation Loss: {avg_val_loss:.4f}")
+        print(f"Student learning Validation Loss: {avg_val_loss:.4f}")
         # if avg val_loss is better than the one before, save the model
         if epoch == 0:
             # create directory if not exist
             os.makedirs("checkpoint", exist_ok=True)
             best_loss = avg_val_loss
-            torch.save(student_model.state_dict(), "./code/checkpoint/student_trained_model.pth")
+            torch.save(student_model.state_dict(), "./code/checkpoint/student_socialized_trained_model.pth")
         elif avg_val_loss < best_loss:
             best_loss = avg_val_loss
-            torch.save(student_model.state_dict(), "./code/checkpoint/student_trained_model.pth")
+            torch.save(student_model.state_dict(), "./code/checkpoint/student_socialized_trained_model.pth")
     return best_loss
         
 
@@ -151,30 +165,33 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
     teacher_model.train()
     running_loss = 0
 
-    loop = tqdm(enumerate(train_loader), total= len(train_loader), leave=True)
+    loop = tqdm(train_loader, total= len(train_loader), leave=True)
 
-    for batch_idx, (data, labels) in loop:
+    for data, labels in loop:
         data, labels = data.to(device), labels.to(device)
         optimizer.zero_grad()
 
-        # Teacher output
-        teacher_output = teacher_model(data)
+        # Teacher output after receiving features from the student
+        teacher_output = teacher_model(data)  # Teacher's direct output
 
-        # Student output
-        with torch.no_grad():
-            student_output = student_model(data)
-
-        # Cross-entropy loss
+        # Cross-entropy loss using teacher's output
         loss_ce = criterion_ce(teacher_output, labels)
 
-        # Distillation loss
-        loss_kd = knowledge_distillation_loss(teacher_output, student_output)
+        # Distillation loss for the current teacher
+        with torch.no_grad():
+            student_features = feature_extractor(student_model, data)
+            student_output = classifier_extractor(student_model, student_features)
+
+        teacher_output_after_student = classifier_extractor(teacher_model, student_features)
+
+        loss_kd = knowledge_distillation_loss(teacher_output_after_student, teacher_output)  # Compare with features
 
         # Energy alignment loss
         loss_al = energy_alignment_loss(teacher_output, delta)
 
-        # Total loss
+        # Total loss combining cross-entropy, distillation, and energy alignment
         loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+
         loss.backward()
         optimizer.step()
 
@@ -183,14 +200,14 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
         running_loss += loss.item()
 
         # Update progress bar with loss and epoch information
-        loop.set_description(f"\033[0mEpoch [{epoch+1}]\033[0m")
+        loop.set_description(f"\033[34mTeacher {teacher_idx} learning Epoch [{epoch+1}]\033[0m")
         loop.set_postfix(loss=loss.item())
     
     # Calculate average loss for the epoch
     avg_loss = running_loss / len(train_loader)
 
     # Print loss for this epoch
-    tqdm.write(f"\033[0mEpoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
+    tqdm.write(f"\033[34mTeacher {teacher_idx} learning Epoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
 
     #### VALIDATION ####
     teacher_model.eval()
@@ -222,15 +239,15 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
         # Calculate average loss for the epoch
         avg_val_loss = val_loss / len(val_loader)
 
-        print(f"Validation Loss: {avg_val_loss:.4f}")
+        print(f"Teacher {teacher_idx} learning Validation Loss: {avg_val_loss:.4f}")
         # if avg val_loss is better than the one before, save the model
         if epoch == 0:
             # create directory if not exist
             os.makedirs("checkpoint", exist_ok=True)
             best_loss = avg_val_loss
-            torch.save(student_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_trained_model.pth")
+            torch.save(teacher_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_socialized_trained_model.pth")
         elif avg_val_loss < best_loss:
             best_loss = avg_val_loss
-            torch.save(student_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_trained_model.pth")
+            torch.save(teacher_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_socialized_trained_model.pth")
     
     return best_loss

@@ -46,3 +46,6 @@ def unlearning_knowledge_distillation_loss(student_output: torch.Tensor, teacher
     soft_student = torch.log_softmax(student_output / temperature, dim=1)
     soft_teacher = torch.softmax(teacher_output / temperature, dim=1)
     return nn.KLDivLoss(reduction="batchmean")(soft_student, soft_teacher)
+
+def forget_kd_loss(student_output: torch.Tensor, teacher_output: torch.Tensor) -> torch.Tensor:
+    return -nn.KLDivLoss(reduction="batchmean")( torch.log_softmax(teacher_output, dim=1), torch.softmax(student_output, dim=1))
