@@ -71,8 +71,8 @@ if __name__=="__main__":
             student_model.to(device)
 
             # Optimizer and loss
-            optimizer_student = optim.Adam(student_model.parameters(), lr=0.001)
-            optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.001) for idx in range(5)]
+            optimizer_student = optim.Adam(student_model.parameters(), lr=0.005)
+            optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.005) for idx in range(5)]
             criterion_ce = torch.nn.CrossEntropyLoss()
 
             student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
