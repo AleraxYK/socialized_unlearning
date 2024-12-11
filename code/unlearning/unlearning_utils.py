@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import torch.nn as nn
 import torch.utils
 import torch.utils.data
 from torchvision import datasets, transforms
@@ -91,31 +92,29 @@ def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, keep
     filtered_dataset = torch.utils.data.Subset(dataset, indices)
     return filtered_dataset
 
-# Evaluate the model
-def unlearning_evaluate_model(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader) -> float:
-    """
-    # Model Evaluation for Unlearning Tasks
+def feature_extractor(model, data):
+    features = nn.Sequential(*list(model.children())[:-3])
+    return features(data)
 
-    The **unlearning_evaluate_model** function evaluates a model on a given dataset and computes its 
-    accuracy. It runs the model in evaluation mode, calculates predictions, and compares them with the true labels.
+def classifier_extractor(model, data):
+    classifier = nn.Sequential(*list(model.children())[-3:])
+    return classifier(data)
 
-    Args:
-        - model (torch.nn.Module): The model to be evaluated.
-        - dataloader (torch.utils.data.DataLoader): The DataLoader containing the dataset on which the model is evaluated.
 
-    Returns:
-        - accuracy (float): The accuracy of the model on the dataset, as a percentage.
-    """
-    model.eval()
-    correct, total = 0, 0
-    with torch.no_grad():
-        for data, labels in dataloader:
-            data, labels = data.to(next(model.parameters()).device), labels.to(next(model.parameters()).device)
-            outputs = model(data)
-            _, predicted = torch.max(outputs, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-    accuracy = 100 * correct / total
-    print(f"Accuracy: {accuracy:.2f}%")
-    return accuracy
+# accuracy 
+def evaluate_model (model, loader, device):
+    '''
+    Function to calculate the accuracy of the model on the test set
+    '''
+    correct = 0
+    total = 0
+    for data, targets in loader:
+        data = data.to(device=device)
+        targets = targets.to(device=device)
+        scores = model(data)
+        _, predictions = scores.max(1)
+        correct += (predictions == targets).sum()
+        total += targets.shape[0]
+    
+    acc = correct / total
+    print(f"Accuracy: {100 * acc}")

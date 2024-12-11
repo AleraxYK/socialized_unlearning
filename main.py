@@ -19,7 +19,7 @@ def socialized_learning(student_model, teacher_models, optimizer_student, optimi
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
     # Dataset
-    train_loader, test_loader, val_loader = get_cifar10_dataloaders(batch_size=512)
+    train_loader, test_loader, val_loader = get_cifar10_dataloaders(batch_size=512) # ON THE PAPER batch_size = 128
     # Training loop
     for epoch in range(num_epochs):
         
