@@ -60,29 +60,20 @@ def classifier_extractor(model, data):
     return classifier(data)
 
 
-def evaluate_model(model, dataloader, device = "mps") -> float:
-    """
-    # Model Evaluation Function
-
-    The **evaluate_model** function calculates the accuracy of a given model on a specified dataset.
-
-    Args:
-        - model: The PyTorch model to be evaluated.
-        - dataloader: A DataLoader containing the dataset for evaluation.
-
-    Returns:
-        - float: The accuracy of the model on the dataset, expressed as a percentage.
-    """
-    model.eval()
-    correct, total = 0, 0
-    with torch.no_grad():
-        for data, labels in dataloader:
-            data, labels = data.to(device), labels.to(device)
-            outputs = model(data)
-            _, predicted = torch.max(outputs, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-    accuracy = 100 * correct / total
-    print(f"Accuracy: {accuracy:.2f}%")
-    return accuracy
+# accuracy 
+def evaluate_model (model, loader, device):
+    '''
+    Function to calculate the accuracy of the model on the test set
+    '''
+    correct = 0
+    total = 0
+    for data, targets in loader:
+        data = data.to(device=device)
+        targets = targets.to(device=device)
+        scores = model(data)
+        _, predictions = scores.max(1)
+        correct += (predictions == targets).sum()
+        total += targets.shape[0]
+    
+    acc = correct / total
+    print(f"Accuracy: {100 * acc}")

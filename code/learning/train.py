@@ -5,7 +5,7 @@ from .losses import energy_alignment_loss, knowledge_distillation_loss
 from .utils import feature_extractor, classifier_extractor
 
 # Collaborative Collaboration
-def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=0.1, lambda_2=0.1, delta=-20, device="cpu") -> float:
+def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, scheduler, lambda_1: float=1.0, lambda_2=0.1, delta=-20, device="cpu") -> float:
     """
     # Collaborative Collaboration Training Function
 
@@ -22,6 +22,7 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         - val_loader: DataLoader for validation data.
         - optimizer: Optimizer for updating the model parameters.
         - criterion_ce: Cross-entropy loss function.
+        - scheduler: Learning rate scheduler
         - lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
         - lambda_2 (float): Weight for the energy alignment loss term (default is 0.1).
         - delta (float): Desired energy alignment value (default is -20).
@@ -38,7 +39,6 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
                 
     for data, labels in loop:
         data, labels = data.to(device), labels.to(device)
-        optimizer.zero_grad()
 
         # Student output
         student_output = student_model(data)
@@ -47,32 +47,39 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         loss_ce = criterion_ce(student_output, labels)
         # print(f"CROSS ENTROPY LOSS: {loss_ce}")
 
-        # Knowledge distillation loss
-        loss_kd = 0
-        for teacher_model in teacher_models:
-            teacher_model.eval()
-            with torch.no_grad():
-                modified_input = feature_extractor(student_model, data)
-                teacher_output1 = classifier_extractor(teacher_model, modified_input)
-                teacher_output2 = teacher_model(data)
-                # teacher_output = teacher_model(data)
+        # # Knowledge distillation loss
+        # loss_kd = 0
+        # for teacher_model in teacher_models:
+        #     teacher_model.eval()
+        #     with torch.no_grad():
+        #         modified_input = feature_extractor(student_model, data)
+        #         teacher_output1 = classifier_extractor(teacher_model, modified_input)
+        #         teacher_output2 = teacher_model(data)
+        #         # teacher_output = teacher_model(data)
             
-            # Compute knowledge distillation loss tra la predizione del teacher e dello studente
-            loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
-            # loss_kd += knowledge_distillation_loss(student_output, teacher_output)
-        # print(f"KD LOSS: {loss_kd}")
+        #     # Compute knowledge distillation loss tra la predizione del teacher e dello studente
+        #     loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
+        #     # loss_kd += knowledge_distillation_loss(student_output, teacher_output)
+        # # print(f"KD LOSS: {loss_kd}")
 
-        # Normalize la KD loss
-        loss_kd /= len(teacher_models)
+        # # Normalize the KD loss
+        # loss_kd /= len(teacher_models)
+        # # print(f"Normalized loss: {loss_kd}")
+        # lambda_loss_kd = lambda_1 * loss_kd
+        # # print(f"lambda kd: {lambda_loss_kd}")
 
-        # Energy alignment loss
-        loss_al = energy_alignment_loss(student_output, delta)
-        # print(f"ENERGY ALIGNMENT: {loss_al}")
+        # # Energy alignment loss
+        # loss_al = energy_alignment_loss(student_output, delta)
+        # # print(f"ENERGY ALIGNMENT: {loss_al}")
+        # lambda_loss_al = lambda_2 * loss_al
+        # # print(f"lamda energy alignment: {lambda_loss_al}")
 
         # Total loss
-        loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+        loss = loss_ce # + lambda_loss_kd + lambda_loss_al
+        # print(f"TOTAL LOSS: {loss}")
 
         # Backpropagation and optimization
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         
@@ -85,6 +92,8 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
     
     # Calculate average loss for the epoch
     avg_loss = running_loss / len(train_loader)
+
+    scheduler.step(avg_loss)
 
     # Print loss for this epoch
     tqdm.write(f"\033[34mStudent learning Epoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
@@ -104,18 +113,26 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
             # Cross-entropy loss
             loss_ce = criterion_ce(student_output, labels)
 
-            # Distillation loss
-            loss_kd = 0
-            for teacher_model in teacher_models:
-                teacher_model.eval()
-                teacher_output = teacher_model(data)
-                loss_kd += knowledge_distillation_loss(student_output, teacher_output)
+            # # Distillation loss
+            # loss_kd = 0
+            # for teacher_model in teacher_models:
+            #     teacher_model.eval()
+            #     modified_input = feature_extractor(student_model, data)
+            #     teacher_output1 = classifier_extractor(teacher_model, modified_input)
+            #     teacher_output2 = teacher_model(data)
+            #     # teacher_output = teacher_model(data)
+            
+            #     # Compute knowledge distillation loss tra la predizione del teacher e dello studente
+            #     loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
+            
+            # # Normalize la KD loss
+            # loss_kd /= len(teacher_models)
 
-            # Energy alignment loss
-            loss_al = energy_alignment_loss(student_output, delta)
+            # # Energy alignment loss
+            # loss_al = energy_alignment_loss(student_output, delta)
 
             # Total loss
-            loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+            loss = loss_ce # + lambda_1 * loss_kd + lambda_2 * loss_al
             val_loss += loss.item()
         # Calculate average loss for the epoch
         avg_val_loss = val_loss / len(val_loader)
@@ -130,11 +147,11 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         elif avg_val_loss < best_loss:
             best_loss = avg_val_loss
             torch.save(student_model.state_dict(), "./code/checkpoint/student_socialized_trained_model.pth")
-    return best_loss
+    return student_model, optimizer, scheduler, best_loss
         
 
 # Reciprocal Altruism
-def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, train_loader, val_loader, optimizer, criterion_ce, lambda_1: float=1.0, lambda_2: float=0.1, delta: float=-20, device: str="mps") -> float:
+def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, train_loader, val_loader, optimizer, criterion_ce, scheduler, lambda_1: float=0.5, lambda_2: float=0.3, delta: float=-20, device: str="mps") -> float:
     """
     # Reciprocal Altruism Training Function
 
@@ -177,20 +194,20 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
         # Cross-entropy loss using teacher's output
         loss_ce = criterion_ce(teacher_output, labels)
 
-        # Distillation loss for the current teacher
-        with torch.no_grad():
-            student_features = feature_extractor(student_model, data)
-            student_output = classifier_extractor(student_model, student_features)
+        # # Distillation loss for the current teacher
+        # with torch.no_grad():
+        #     student_features = feature_extractor(student_model, data)
+        #     student_output = classifier_extractor(student_model, student_features)
 
-        teacher_output_after_student = classifier_extractor(teacher_model, student_features)
+        # teacher_output_after_student = classifier_extractor(teacher_model, student_features)
 
-        loss_kd = knowledge_distillation_loss(teacher_output_after_student, teacher_output)  # Compare with features
+        # loss_kd = knowledge_distillation_loss(teacher_output_after_student, teacher_output)  # Compare with features
 
-        # Energy alignment loss
-        loss_al = energy_alignment_loss(teacher_output, delta)
+        # # Energy alignment loss
+        # loss_al = energy_alignment_loss(teacher_output, delta)
 
         # Total loss combining cross-entropy, distillation, and energy alignment
-        loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+        loss = loss_ce # + lambda_1 * loss_kd + lambda_2 * loss_al
 
         loss.backward()
         optimizer.step()
@@ -205,6 +222,8 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
     
     # Calculate average loss for the epoch
     avg_loss = running_loss / len(train_loader)
+
+    scheduler.step(avg_loss)
 
     # Print loss for this epoch
     tqdm.write(f"\033[34mTeacher {teacher_idx} learning Epoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_loss:.4f}")
@@ -227,14 +246,14 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
             # Cross-entropy loss
             loss_ce = criterion_ce(teacher_output, labels)
 
-            # Distillation loss
-            loss_kd = knowledge_distillation_loss(teacher_output, student_output)
+            # # Distillation loss
+            # loss_kd = knowledge_distillation_loss(teacher_output, student_output)
 
-            # Energy alignment loss
-            loss_al = energy_alignment_loss(teacher_output, delta)
+            # # Energy alignment loss
+            # loss_al = energy_alignment_loss(teacher_output, delta)
 
             # Total loss
-            loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+            loss = loss_ce # + lambda_1 * loss_kd + lambda_2 * loss_al
             val_loss += loss.item()
         # Calculate average loss for the epoch
         avg_val_loss = val_loss / len(val_loader)
@@ -250,4 +269,4 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
             best_loss = avg_val_loss
             torch.save(teacher_model.state_dict(), "./code/checkpoint/teacher_"+str(teacher_idx)+"_socialized_trained_model.pth")
     
-    return best_loss
+    return teacher_model, optimizer, scheduler, best_loss

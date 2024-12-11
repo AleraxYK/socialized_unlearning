@@ -15,7 +15,7 @@ if pl.system() == "Darwin":
 else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def socialized_learning(student_model, teacher_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs):
+def socialized_learning(student_model, teacher_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler):
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
     # Dataset
@@ -24,11 +24,11 @@ def socialized_learning(student_model, teacher_models, optimizer_student, optimi
     for epoch in range(num_epochs):
         
         # Collaborative Collaboration
-        best_student_loss = collaborative_collaboration(epoch, num_epochs, best_student_loss, student_model, teacher_models, train_loader, val_loader, optimizer_student, criterion_ce, device=device)
+        student_model, optimizer_student, student_scheduler, best_student_loss = collaborative_collaboration(epoch, num_epochs, best_student_loss, student_model, teacher_models, train_loader, val_loader, optimizer_student, criterion_ce, scheduler=student_scheduler, device=device)
         
         # Reciprocal Altruism
         for teacher_idx, (teacher_model, optimizer_teacher) in enumerate(zip(teacher_models, optimizer_teachers)):
-            best_teachers_losses[teacher_idx] = reciprocal_altruism(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, train_loader, val_loader, optimizer_teacher, criterion_ce, device=device)
+            teacher_models[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses[teacher_idx] = reciprocal_altruism(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, train_loader, val_loader, optimizer_teacher, criterion_ce, scheduler=teachers_scheduler[teacher_idx], device=device)
 
         print("Training epoch completed.")
 
@@ -36,6 +36,7 @@ def socialized_learning(student_model, teacher_models, optimizer_student, optimi
     print("Evaluating student model...")
     evaluate_model(student_model, test_loader, device)
 
+# TODO: DA SISTEMARE COME IL LEARNING
 def socialized_unlearning(student_model, teacher_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs):
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
@@ -53,7 +54,7 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
     print("Evaluating student model after unlearning...")
     unlearning_evaluate_model(student_model, non_target_test_loader, device)
     print("Evaluating teachers models after unlearning...")
-    
+     
 
 if __name__=="__main__": 
     choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
@@ -63,18 +64,23 @@ if __name__=="__main__":
             agents = [create_model() for _ in range(5)]
             for idx in range(5):
                 agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', weights_only=True))
+                agents[idx].to(device)
 
             student_model = create_model()
             student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth", weights_only=True))
+            student_model.to(device)
 
             # Optimizer and loss
             optimizer_student = optim.Adam(student_model.parameters(), lr=0.001)
             optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.001) for idx in range(5)]
             criterion_ce = torch.nn.CrossEntropyLoss()
 
+            student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
+            teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
+
             num_epochs = 10
 
-            socialized_learning(student_model, agents, optimizer_student, optimizer_teachers, criterion_ce, num_epochs)
+            socialized_learning(student_model, agents, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler)
 
         # case 1: # UNLEARNING
         #     # Load student
