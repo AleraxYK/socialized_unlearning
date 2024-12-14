@@ -6,8 +6,8 @@ from code.models import create_model
 from code.learning.train import collaborative_collaboration, reciprocal_altruism
 from code.learning.utils import get_cifar10_dataloaders, evaluate_model
 # Unlearning
-from code.unlearning.unlearning_train import collaborative_unlearning, reciprocal_unlearning
-from code.unlearning.unlearning_utils import unlearning_evaluate_model, unlearning_get_cifar10_dataloaders
+from code.unlearning.unlearning_train import collaborative_unlearning, unlearning_reciprocal_altruism
+from code.unlearning.unlearning_utils import evaluate_model, unlearning_get_cifar10_dataloaders
 
 # Configurazione
 if pl.system() == "Darwin":
@@ -42,17 +42,18 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
 
     target_classes = [0, 1]
+    # TODO: Da sistemare in base all nuovo approccio
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
     target_train_loader, non_target_train_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1], dataset_loaders[2]
 
     for epoch in range(num_epochs):
         print(f"Epoch {epoch + 1}: Unlearning Step")
-        collaborative_unlearning(epoch, num_epochs, best_student_loss, student_model, teacher_models, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_student, criterion_ce, device=device)
+        student_model, optimizer_student, student_scheduler, best_student_loss = collaborative_unlearning(epoch, num_epochs, best_student_loss, student_model, teacher_models, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_student, criterion_ce, student_scheduler, device=device)
         for teacher_idx, (teacher_model, optimizer_teacher) in enumerate(zip(teacher_models, optimizer_teachers)):
-            best_teachers_losses[teacher_idx] = reciprocal_unlearning(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, device=device)
+            teacher_models[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses[teacher_idx] = unlearning_reciprocal_altruism(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, teachers_scheduler[teacher_idx], device=device)
 
     print("Evaluating student model after unlearning...")
-    unlearning_evaluate_model(student_model, non_target_test_loader, device)
+    evaluate_model(student_model, non_target_test_loader, device)
     print("Evaluating teachers models after unlearning...")
      
 

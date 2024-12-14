@@ -53,11 +53,4 @@ def unlearning_knowledge_distillation_loss(student_output: torch.Tensor, teacher
     
     # Compute KL divergence loss (regular distillation)
     kd_loss = nn.KLDivLoss(reduction="batchmean")(soft_student, soft_teacher)
-    
-    if target_mask is not None:
-        # Apply reverse distillation (for target classes: force divergence)
-        reverse_kd_loss = nn.KLDivLoss(reduction="batchmean")(soft_teacher, soft_student)  # Reverse KD for target classes
-        reverse_kd_loss = reverse_kd_loss[target_mask].mean()  # Only apply reverse KD for target classes
-        return kd_loss + reverse_kd_loss
-    else:
-        return kd_loss
+    return kd_loss
