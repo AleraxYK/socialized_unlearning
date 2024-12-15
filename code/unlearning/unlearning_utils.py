@@ -29,7 +29,7 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
 
     """
     # Dataset CIFAR-10
-    train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transforms.ToTensor)
+    train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transforms.ToTensor())
     images = np.stack([train_dataset[i][0] for i in range(len(train_dataset))])
 
     # Compute the mean and standard deviation for each channel
@@ -47,11 +47,11 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
 
     # Filter target and non target classes
     # TRAIN
-    target_train_data = filter_dataset(train_dataset, target_classes, keep=True)
-    non_target_train_data = filter_dataset(train_dataset, target_classes, keep=False)
+    target_train_data = filter_dataset(train_dataset, target_classes, non_keep=True)
+    non_target_train_data = filter_dataset(train_dataset, target_classes, non_keep=False)
     
     # TEST
-    non_target_test_data = filter_dataset(test_dataset, target_classes, keep=False)
+    non_target_test_data = filter_dataset(test_dataset, target_classes, non_keep=False)
 
     # VALIDATION
     non_target_val_data, non_target_test_data = torch.utils.data.random_split(non_target_test_data, [1500, 6500])
@@ -67,7 +67,7 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
 
 
 # Filter dataset to exclude classes
-def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, keep: bool=True) -> torch.utils.data.Subset:
+def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, non_keep: bool=True) -> torch.utils.data.Subset:
     """
     # Dataset Filtering for Target and Non-Target Classes
 
@@ -84,7 +84,7 @@ def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, keep
     """
     labels = np.array([label for _, label in dataset])
 
-    if keep:
+    if non_keep:
         indices = [i for i, label in enumerate(labels) if label in target_classes]
     else:
         indices = [i for i, label in enumerate(labels) if label not in target_classes]

@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 import os
-from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss
+from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss, contrastive_loss
 from .unlearning_utils import feature_extractor, classifier_extractor
 
 # Collaborative Unlearning
@@ -76,7 +76,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         optimizer.step()
 
         # Update progress bar
-        loop_target.set_description(f"TARGET Epoch [{epoch+1}]")
+        loop_target.set_description(f"Student - Target Epoch [{epoch+1}]")
 
     loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
 
@@ -87,9 +87,6 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
         # Student output
         student_output = student_model(data)
-
-        # Energy alignment to keep confidence for non-target classes
-        loss_energy_non_target = unlearning_energy_alignment_loss(student_output, delta_non_target)
 
         # Cross-entropy loss for non-target classes
         loss_ce = criterion_ce(student_output, labels)
@@ -117,7 +114,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         running_loss += loss.item()
 
         # Update progress bar
-        loop_non_target.set_description(f"NON TARGET Epoch [{epoch+1}]")
+        loop_non_target.set_description(f"Student - Non-target Epoch [{epoch+1}]")
         loop_non_target.set_postfix(loss=loss.item())
 
     avg_loss = running_loss / len(non_target_train_loader)
@@ -160,7 +157,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
         avg_val_loss = val_loss / len(non_target_val_loader)
 
-        print(f"Validation Loss: {avg_val_loss:.4f}")
+        print(f"STUDENT Validation Loss: {avg_val_loss:.4f}")
         if epoch == 0 or avg_val_loss < best_loss:
             best_loss = avg_val_loss
             os.makedirs("checkpoint", exist_ok=True)
@@ -256,7 +253,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         loss_al = unlearning_energy_alignment_loss(teacher_output, delta_non_target)
 
         # Total loss for non-target classes
-        loss_non_target = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+        loss_non_target = loss_ce + initial_lambda_1 * loss_kd + lambda_2 * loss_al
 
         optimizer.zero_grad()
         loss_non_target.backward()
@@ -286,12 +283,12 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
 
             loss_al = unlearning_energy_alignment_loss(teacher_output, delta_non_target)
 
-            loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+            loss = loss_ce + initial_lambda_1 * loss_kd + lambda_2 * loss_al
             val_loss += loss.item()
 
         avg_val_loss = val_loss / len(non_target_val_loader)
 
-        print(f"Teacher {teacher_idx} Validation Loss: {avg_val_loss:.4f}")
+        print(f"TEACHER {teacher_idx} Validation Loss: {avg_val_loss:.4f}")
 
         if epoch == 0 or avg_val_loss < best_loss:
             best_loss = avg_val_loss

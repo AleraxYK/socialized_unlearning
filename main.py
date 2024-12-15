@@ -41,8 +41,7 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
 
-    target_classes = [0, 1]
-    # TODO: Da sistemare in base all nuovo approccio
+    target_classes = [0, 4]
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
     target_train_loader, non_target_train_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1], dataset_loaders[2]
 
@@ -52,6 +51,11 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
         for teacher_idx, (teacher_model, optimizer_teacher) in enumerate(zip(teacher_models, optimizer_teachers)):
             teacher_models[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses[teacher_idx] = unlearning_reciprocal_altruism(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, teachers_scheduler[teacher_idx], device=device)
 
+    
+    # EVALUATION
+    student_model = create_model()
+    student_model.load_state_dict(torch.load("code/checkpoint/UNLEARNED_student_trained_model.pth", weights_only=True))
+    student_model.to(device)
     print("Evaluating student model after unlearning...")
     evaluate_model(student_model, non_target_test_loader, device)
     print("Evaluating teachers models after unlearning...")
@@ -89,7 +93,7 @@ if __name__=="__main__":
             agents_unlearning = [create_model() for _ in range(2)]
             for idx in range(2):
                 agents_unlearning[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/unlearning_agent_'+str(idx)+'_trained_model.pth', weights_only=True))
-                agents_unlearning[idx.to(device)]
+                agents_unlearning[idx].to(device)
 
             student_unlearning = create_model()
             # student_unlearning.load_state_dict(torch.load("code/preprocessing/checkpoint/unlearning_student_trained_model.pth", map_location="mps", weights_only=True))
@@ -98,7 +102,7 @@ if __name__=="__main__":
 
             # Optimizer and loss
             optimizer_student = optim.Adam(student_unlearning.parameters(), lr=0.005)
-            optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.005) for idx in range(2)]
+            optimizer_teachers = [optim.Adam(agents_unlearning[idx].parameters(), lr=0.005) for idx in range(2)]
             criterion_ce = torch.nn.CrossEntropyLoss()
             
             student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
