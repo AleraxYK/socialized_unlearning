@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 import os
-from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss, contrastive_loss
+from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss
 from .unlearning_utils import feature_extractor, classifier_extractor
 
 # Collaborative Unlearning

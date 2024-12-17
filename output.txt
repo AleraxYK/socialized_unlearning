@@ -1,0 +1,253 @@
+Epoch 1: Unlearning Step
+Epoch [1/50], Average NON TARGET Loss: 6.1421
+STUDENT Validation Loss: 1.7388
+TEACHER 0 Validation Loss: 1.9186
+TEACHER 1 Validation Loss: 1.9981
+Epoch 2: Unlearning Step
+Epoch [2/50], Average NON TARGET Loss: 6.9600
+STUDENT Validation Loss: 2.0274
+TEACHER 0 Validation Loss: 2.2717
+TEACHER 1 Validation Loss: 3.1911
+Epoch 3: Unlearning Step
+Epoch [3/50], Average NON TARGET Loss: 8.7632
+STUDENT Validation Loss: 2.7815
+TEACHER 0 Validation Loss: 2.6520
+TEACHER 1 Validation Loss: 3.9032
+Epoch 4: Unlearning Step
+Epoch [4/50], Average NON TARGET Loss: 6.7643
+STUDENT Validation Loss: 2.2136
+TEACHER 0 Validation Loss: 2.7620
+TEACHER 1 Validation Loss: 2.9710
+Epoch 5: Unlearning Step
+Epoch [5/50], Average NON TARGET Loss: 7.8287
+STUDENT Validation Loss: 2.2646
+TEACHER 0 Validation Loss: 2.7446
+TEACHER 1 Validation Loss: 3.9578
+Epoch 6: Unlearning Step
+Epoch [6/50], Average NON TARGET Loss: 7.5302
+STUDENT Validation Loss: 2.1061
+TEACHER 0 Validation Loss: 2.4434
+TEACHER 1 Validation Loss: 2.4756
+Epoch 7: Unlearning Step
+Epoch [7/50], Average NON TARGET Loss: 7.3552
+STUDENT Validation Loss: 2.0572
+TEACHER 0 Validation Loss: 2.6398
+TEACHER 1 Validation Loss: 2.8665
+Epoch 8: Unlearning Step
+Epoch [8/50], Average NON TARGET Loss: 3.2379
+STUDENT Validation Loss: 2.3694
+TEACHER 0 Validation Loss: 3.6097
+TEACHER 1 Validation Loss: 3.4987
+Epoch 9: Unlearning Step
+Epoch [9/50], Average NON TARGET Loss: 3.4725
+STUDENT Validation Loss: 2.4209
+TEACHER 0 Validation Loss: 3.9461
+TEACHER 1 Validation Loss: 3.7845
+Epoch 10: Unlearning Step
+Epoch [10/50], Average NON TARGET Loss: 3.5338
+STUDENT Validation Loss: 2.4908
+TEACHER 0 Validation Loss: 4.0719
+TEACHER 1 Validation Loss: 3.7367
+Epoch 11: Unlearning Step
+Epoch [11/50], Average NON TARGET Loss: 3.5359
+STUDENT Validation Loss: 2.4236
+TEACHER 0 Validation Loss: 3.9955
+TEACHER 1 Validation Loss: 3.8340
+Epoch 12: Unlearning Step
+Epoch [12/50], Average NON TARGET Loss: 3.5325
+STUDENT Validation Loss: 2.4354
+TEACHER 0 Validation Loss: 3.9686
+TEACHER 1 Validation Loss: 3.9215
+Epoch 13: Unlearning Step
+Epoch [13/50], Average NON TARGET Loss: 3.5131
+STUDENT Validation Loss: 2.4130
+TEACHER 0 Validation Loss: 3.9079
+TEACHER 1 Validation Loss: 3.8313
+Epoch 14: Unlearning Step
+Epoch [14/50], Average NON TARGET Loss: 3.5032
+STUDENT Validation Loss: 2.4080
+TEACHER 0 Validation Loss: 4.0732
+TEACHER 1 Validation Loss: 4.0796
+Epoch 15: Unlearning Step
+Epoch [15/50], Average NON TARGET Loss: 2.8251
+STUDENT Validation Loss: 2.4978
+TEACHER 0 Validation Loss: 4.3200
+TEACHER 1 Validation Loss: 4.1269
+Epoch 16: Unlearning Step
+Epoch [16/50], Average NON TARGET Loss: 2.8972
+STUDENT Validation Loss: 2.4708
+TEACHER 0 Validation Loss: 4.3939
+TEACHER 1 Validation Loss: 4.2337
+Epoch 17: Unlearning Step
+Epoch [17/50], Average NON TARGET Loss: 2.9313
+STUDENT Validation Loss: 2.5978
+TEACHER 0 Validation Loss: 4.4508
+TEACHER 1 Validation Loss: 4.2703
+Epoch 18: Unlearning Step
+Epoch [18/50], Average NON TARGET Loss: 2.9553
+STUDENT Validation Loss: 2.4835
+TEACHER 0 Validation Loss: 4.5054
+TEACHER 1 Validation Loss: 4.3436
+Epoch 19: Unlearning Step
+Epoch [19/50], Average NON TARGET Loss: 2.9978
+STUDENT Validation Loss: 2.5936
+TEACHER 0 Validation Loss: 4.6091
+TEACHER 1 Validation Loss: 4.4135
+Epoch 20: Unlearning Step
+Epoch [20/50], Average NON TARGET Loss: 3.0263
+STUDENT Validation Loss: 2.6692
+TEACHER 0 Validation Loss: 4.6213
+TEACHER 1 Validation Loss: 4.5464
+Epoch 21: Unlearning Step
+Epoch [21/50], Average NON TARGET Loss: 3.0389
+STUDENT Validation Loss: 2.6334
+TEACHER 0 Validation Loss: 4.6296
+TEACHER 1 Validation Loss: 4.6159
+Epoch 22: Unlearning Step
+Epoch [22/50], Average NON TARGET Loss: 2.9791
+STUDENT Validation Loss: 2.5728
+TEACHER 0 Validation Loss: 4.7378
+TEACHER 1 Validation Loss: 4.5742
+Epoch 23: Unlearning Step
+Epoch [23/50], Average NON TARGET Loss: 2.9793
+STUDENT Validation Loss: 2.6103
+TEACHER 0 Validation Loss: 4.8122
+TEACHER 1 Validation Loss: 4.4825
+Epoch 24: Unlearning Step
+Epoch [24/50], Average NON TARGET Loss: 2.9908
+STUDENT Validation Loss: 2.5986
+TEACHER 0 Validation Loss: 4.6881
+TEACHER 1 Validation Loss: 4.5159
+Epoch 25: Unlearning Step
+Epoch [25/50], Average NON TARGET Loss: 2.9962
+STUDENT Validation Loss: 2.5810
+TEACHER 0 Validation Loss: 4.6407
+TEACHER 1 Validation Loss: 4.5191
+Epoch 26: Unlearning Step
+Epoch [26/50], Average NON TARGET Loss: 2.9999
+STUDENT Validation Loss: 2.6869
+TEACHER 0 Validation Loss: 4.7435
+TEACHER 1 Validation Loss: 4.6699
+Epoch 27: Unlearning Step
+Epoch [27/50], Average NON TARGET Loss: 2.9954
+STUDENT Validation Loss: 2.6610
+TEACHER 0 Validation Loss: 4.5705
+TEACHER 1 Validation Loss: 4.6681
+Epoch 28: Unlearning Step
+Epoch [28/50], Average NON TARGET Loss: 2.9867
+STUDENT Validation Loss: 2.5733
+TEACHER 0 Validation Loss: 4.7393
+TEACHER 1 Validation Loss: 4.4845
+Epoch 29: Unlearning Step
+Epoch [29/50], Average NON TARGET Loss: 2.9925
+STUDENT Validation Loss: 2.6859
+TEACHER 0 Validation Loss: 4.7362
+TEACHER 1 Validation Loss: 4.6000
+Epoch 30: Unlearning Step
+Epoch [30/50], Average NON TARGET Loss: 2.9816
+STUDENT Validation Loss: 2.6415
+TEACHER 0 Validation Loss: 4.7441
+TEACHER 1 Validation Loss: 4.7103
+Epoch 31: Unlearning Step
+Epoch [31/50], Average NON TARGET Loss: 2.9872
+STUDENT Validation Loss: 2.6241
+TEACHER 0 Validation Loss: 4.6805
+TEACHER 1 Validation Loss: 4.4530
+Epoch 32: Unlearning Step
+Epoch [32/50], Average NON TARGET Loss: 2.9964
+STUDENT Validation Loss: 2.6609
+TEACHER 0 Validation Loss: 4.7279
+TEACHER 1 Validation Loss: 4.5597
+Epoch 33: Unlearning Step
+Epoch [33/50], Average NON TARGET Loss: 2.9899
+STUDENT Validation Loss: 2.6741
+TEACHER 0 Validation Loss: 4.6525
+TEACHER 1 Validation Loss: 4.5791
+Epoch 34: Unlearning Step
+Epoch [34/50], Average NON TARGET Loss: 2.9738
+STUDENT Validation Loss: 2.6675
+TEACHER 0 Validation Loss: 4.7089
+TEACHER 1 Validation Loss: 4.5479
+Epoch 35: Unlearning Step
+Epoch [35/50], Average NON TARGET Loss: 2.9920
+STUDENT Validation Loss: 2.6772
+TEACHER 0 Validation Loss: 4.6516
+TEACHER 1 Validation Loss: 4.5452
+Epoch 36: Unlearning Step
+Epoch [36/50], Average NON TARGET Loss: 2.9833
+STUDENT Validation Loss: 2.6153
+TEACHER 0 Validation Loss: 4.7235
+TEACHER 1 Validation Loss: 4.6257
+Epoch 37: Unlearning Step
+Epoch [37/50], Average NON TARGET Loss: 2.9830
+STUDENT Validation Loss: 2.5481
+TEACHER 0 Validation Loss: 4.6925
+TEACHER 1 Validation Loss: 4.4739
+Epoch 38: Unlearning Step
+Epoch [38/50], Average NON TARGET Loss: 2.9933
+STUDENT Validation Loss: 2.7164
+TEACHER 0 Validation Loss: 4.5414
+TEACHER 1 Validation Loss: 4.5687
+Epoch 39: Unlearning Step
+Epoch [39/50], Average NON TARGET Loss: 2.9884
+STUDENT Validation Loss: 2.6339
+TEACHER 0 Validation Loss: 4.6477
+TEACHER 1 Validation Loss: 4.5635
+Epoch 40: Unlearning Step
+Epoch [40/50], Average NON TARGET Loss: 2.9833
+STUDENT Validation Loss: 2.5760
+TEACHER 0 Validation Loss: 4.6616
+TEACHER 1 Validation Loss: 4.6059
+Epoch 41: Unlearning Step
+Epoch [41/50], Average NON TARGET Loss: 2.9805
+STUDENT Validation Loss: 2.5896
+TEACHER 0 Validation Loss: 4.6745
+TEACHER 1 Validation Loss: 4.6322
+Epoch 42: Unlearning Step
+Epoch [42/50], Average NON TARGET Loss: 2.9863
+STUDENT Validation Loss: 2.6541
+TEACHER 0 Validation Loss: 4.7602
+TEACHER 1 Validation Loss: 4.4455
+Epoch 43: Unlearning Step
+Epoch [43/50], Average NON TARGET Loss: 2.9947
+STUDENT Validation Loss: 2.6962
+TEACHER 0 Validation Loss: 4.5777
+TEACHER 1 Validation Loss: 4.5087
+Epoch 44: Unlearning Step
+Epoch [44/50], Average NON TARGET Loss: 2.9876
+STUDENT Validation Loss: 2.6926
+TEACHER 0 Validation Loss: 4.6331
+TEACHER 1 Validation Loss: 4.5246
+Epoch 45: Unlearning Step
+Epoch [45/50], Average NON TARGET Loss: 2.9932
+STUDENT Validation Loss: 2.6680
+TEACHER 0 Validation Loss: 4.6431
+TEACHER 1 Validation Loss: 4.5986
+Epoch 46: Unlearning Step
+Epoch [46/50], Average NON TARGET Loss: 2.9787
+STUDENT Validation Loss: 2.5589
+TEACHER 0 Validation Loss: 4.5976
+TEACHER 1 Validation Loss: 4.5654
+Epoch 47: Unlearning Step
+Epoch [47/50], Average NON TARGET Loss: 2.9922
+STUDENT Validation Loss: 2.6442
+TEACHER 0 Validation Loss: 4.6132
+TEACHER 1 Validation Loss: 4.5008
+Epoch 48: Unlearning Step
+Epoch [48/50], Average NON TARGET Loss: 2.9939
+STUDENT Validation Loss: 2.6550
+TEACHER 0 Validation Loss: 4.7004
+TEACHER 1 Validation Loss: 4.6608
+Epoch 49: Unlearning Step
+Epoch [49/50], Average NON TARGET Loss: 2.9888
+STUDENT Validation Loss: 2.5987
+TEACHER 0 Validation Loss: 4.7380
+TEACHER 1 Validation Loss: 4.4642
+Epoch 50: Unlearning Step
+Epoch [50/50], Average NON TARGET Loss: 2.9989
+STUDENT Validation Loss: 2.6966
+TEACHER 0 Validation Loss: 4.7129
+TEACHER 1 Validation Loss: 4.5882
+Evaluating student model after unlearning...
+Accuracy: 45.661537170410156
+Evaluating teachers models after unlearning...

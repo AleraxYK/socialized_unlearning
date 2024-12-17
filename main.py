@@ -62,53 +62,53 @@ def socialized_unlearning(student_model, teacher_models, optimizer_student, opti
      
 
 if __name__=="__main__": 
-    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
-    match(choice):
-        case 0: # LEARNING
+    #choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
+    #match(choice):
+        #case 0: # LEARNING
+        #    # Models
+        #    agents = [create_model() for _ in range(5)]
+        #    for idx in range(5):
+        #        # agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', map_location="mps", weights_only=True))
+        #        agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', weights_only=True))
+        #        agents[idx].to(device)
+#
+        #    student_model = create_model()
+        #    student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth", weights_only=True))
+        #    student_model.to(device)
+#
+        #    # Optimizer and loss
+        #    optimizer_student = optim.Adam(student_model.parameters(), lr=0.005)
+        #    optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.005) for idx in range(5)]
+        #    criterion_ce = torch.nn.CrossEntropyLoss()
+#
+        #    student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
+        #    teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
+#
+        #    num_epochs = 50 # SET TO 50
+#
+        #    socialized_learning(student_model, agents, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler)
+#
+        #case 1: # UNLEARNING
             # Models
-            agents = [create_model() for _ in range(5)]
-            for idx in range(5):
-                # agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', map_location="mps", weights_only=True))
-                agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', weights_only=True))
-                agents[idx].to(device)
+    agents_unlearning = [create_model() for _ in range(2)]
+    for idx in range(2):
+        agents_unlearning[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/unlearning_agent_'+str(idx)+'_trained_model.pth', weights_only=True))
+        agents_unlearning[idx].to(device)
 
-            student_model = create_model()
-            student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth", weights_only=True))
-            student_model.to(device)
+    student_unlearning = create_model()
+    # student_unlearning.load_state_dict(torch.load("code/preprocessing/checkpoint/unlearning_student_trained_model.pth", map_location="mps", weights_only=True))
+    student_unlearning.load_state_dict(torch.load("code/preprocessing/checkpoint/unlearning_student_trained_model.pth", weights_only=True))
+    student_unlearning.to(device)
 
-            # Optimizer and loss
-            optimizer_student = optim.Adam(student_model.parameters(), lr=0.005)
-            optimizer_teachers = [optim.Adam(agents[idx].parameters(), lr=0.005) for idx in range(5)]
-            criterion_ce = torch.nn.CrossEntropyLoss()
+    # Optimizer and loss
+    optimizer_student = optim.Adam(student_unlearning.parameters(), lr=0.005)
+    optimizer_teachers = [optim.Adam(agents_unlearning[idx].parameters(), lr=0.005) for idx in range(2)]
+    criterion_ce = torch.nn.CrossEntropyLoss()
+    
+    student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
+    teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
 
-            student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
-            teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
-
-            num_epochs = 10 # SET TO 50
-
-            socialized_learning(student_model, agents, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler)
-
-        case 1: # UNLEARNING
-            # Models
-            agents_unlearning = [create_model() for _ in range(2)]
-            for idx in range(2):
-                agents_unlearning[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/unlearning_agent_'+str(idx)+'_trained_model.pth', weights_only=True))
-                agents_unlearning[idx].to(device)
-
-            student_unlearning = create_model()
-            # student_unlearning.load_state_dict(torch.load("code/preprocessing/checkpoint/unlearning_student_trained_model.pth", map_location="mps", weights_only=True))
-            student_unlearning.load_state_dict(torch.load("code/preprocessing/checkpoint/unlearning_student_trained_model.pth", weights_only=True))
-            student_unlearning.to(device)
-
-            # Optimizer and loss
-            optimizer_student = optim.Adam(student_unlearning.parameters(), lr=0.005)
-            optimizer_teachers = [optim.Adam(agents_unlearning[idx].parameters(), lr=0.005) for idx in range(2)]
-            criterion_ce = torch.nn.CrossEntropyLoss()
-            
-            student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
-            teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
-
-            num_epochs = 10 # MAYBE SET TO 50
-            
-            socialized_unlearning(student_unlearning, agents_unlearning, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler)
+    num_epochs = 50 # MAYBE SET TO 50
+    
+    socialized_unlearning(student_unlearning, agents_unlearning, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler)
 
