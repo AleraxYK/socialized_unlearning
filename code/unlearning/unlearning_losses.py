@@ -56,33 +56,23 @@ def unlearning_knowledge_distillation_loss(student_output: torch.Tensor, teacher
     kd_loss = nn.KLDivLoss(reduction="batchmean")(soft_student, soft_teacher)
     return kd_loss
 
-# def contrastive_loss(embeddings, labels, temperature=0.5):
-#     """
-#     Contrastive loss per il contrastive learning.
+def erasure_loss(student_output, forget_classes):
+    """
+    Compute the erasure loss to maximize entropy for the forget classes.
 
-#     Args:
-#         embeddings: Rappresentazioni latenti degli esempi.
-#         labels: Etichette degli esempi (usate per creare coppie positive e negative).
-#         temperature: Parametro di temperatura per scalare la similarità.
+    Args:
+        student_output (Tensor): Output logits from the student model (batch_size, num_classes).
+        forget_classes (list): List of class indices to forget.
 
-#     Returns:
-#         loss: Valore della contrastive loss.
-#     """
-#     # Calcola similarità coseno tra tutte le coppie
-#     similarity_matrix = F.cosine_similarity(embeddings.unsqueeze(1), embeddings.unsqueeze(0), dim=2)
-#     labels_matrix = (labels.unsqueeze(1) == labels.unsqueeze(0)).float()
-
-#     # Loss per coppie positive
-#     positive_mask = labels_matrix
-#     positive_loss = -torch.log(
-#         torch.exp(similarity_matrix / temperature) * positive_mask
-#     ).sum(dim=1)
-
-#     # Loss per coppie negative
-#     negative_mask = 1 - labels_matrix
-#     negative_loss = -torch.log(
-#         1 - torch.exp(similarity_matrix / temperature) * negative_mask
-#     ).sum(dim=1)
-
-#     # Ritorna la media delle loss
-#     return (positive_loss + negative_loss).mean()
+    Returns:
+        Tensor: The erasure loss value.
+    """
+    # Apply softmax to get probabilities
+    probabilities = F.softmax(student_output, dim=1)
+    
+    # Select probabilities corresponding to the forget classes
+    forget_probs = probabilities[:, forget_classes]
+    
+    # Compute the entropy loss for forget classes
+    loss = -torch.mean(torch.sum(forget_probs * torch.log(forget_probs + 1e-8), dim=1))  # Add small epsilon for numerical stability
+    return loss

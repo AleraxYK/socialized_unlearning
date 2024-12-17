@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 import os
-from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss
+from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss, erasure_loss
 from .unlearning_utils import feature_extractor, classifier_extractor
 
 # Collaborative Unlearning
@@ -34,10 +34,13 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
     """
     student_model.train()
     running_loss = 0
+    target_running_loss = 0
 
     loop_target = tqdm(target_train_loader, total=len(target_train_loader), leave=True)
 
     # Forget target classes
+    forget_classes = [0, 4]
+
     for data, labels in loop_target:
         data, labels = data.to(device), labels.to(device)
 
@@ -60,23 +63,29 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
         lambda_loss_kd = lambda_1 * loss_kd
 
+        # Erasure Loss (maximize entropy for forget classes)
+        loss_erasure = erasure_loss(student_output, forget_classes)
+        lambda_loss_erasure = lambda_3 * loss_erasure
+
         # Energy alignment loss
         loss_al = unlearning_energy_alignment_loss(student_output, delta_target)
         lambda_loss_al = lambda_2 * loss_al
 
-        # Forgetting Cross-Entropy Loss (push predictions away from ground truth)
-        inverted_labels = (labels + 1) % student_output.size(1)  # Shift labels to create disagreement
-        loss_forgetting = criterion_ce(student_output, inverted_labels)
-        lambda_loss_forgetting = lambda_3 * loss_forgetting
-
         # Total loss
-        loss = lambda_loss_forgetting + lambda_loss_kd + lambda_loss_al
+        loss = lambda_loss_erasure + lambda_loss_kd + lambda_loss_al
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
+        target_running_loss += loss.item()
+
         # Update progress bar
         loop_target.set_description(f"Student - Target Epoch [{epoch+1}]")
+        loop_target.set_postfix(loss=loss.item())
+
+    avg_target_loss = target_running_loss / len(target_train_loader)
+
+    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], STUDENT Average TARGET (to forget) Loss: {avg_target_loss:.4f}")
 
     loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
 
@@ -120,7 +129,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
     avg_loss = running_loss / len(non_target_train_loader)
     scheduler.step(avg_loss)
 
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], Average NON TARGET Loss: {avg_loss:.4f}")
+    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], STUDENT Average NON TARGET (to preserve) Loss: {avg_loss:.4f}")
 
     #### VALIDATION ####
     student_model.eval()
@@ -198,6 +207,9 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
     """
     teacher_model.train()
     running_loss = 0
+    target_running_loss = 0
+
+    forget_classes = [0, 4]  # Classi da dimenticare
 
     # Handle target classes (to forget)
     loop_target = tqdm(target_train_loader, total=len(target_train_loader), leave=True)
@@ -207,9 +219,8 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         # Teacher's direct output
         teacher_output = teacher_model(data)
 
-        # Reverse Cross-Entropy Loss for target classes
-        inverted_labels = (labels + 1) % teacher_output.size(1)  # Create disagreement
-        loss_reverse_ce = criterion_ce(teacher_output, inverted_labels)
+        # Erasure Loss for target classes
+        loss_erasure = erasure_loss(teacher_output, forget_classes)
 
         # Distillation Loss (teacher follows student)
         with torch.no_grad():
@@ -222,17 +233,20 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         lambda_1 = initial_lambda_1 * (1 - epoch / num_epochs)
 
         # Total loss for target classes
-        loss_target = loss_reverse_ce + lambda_1 * loss_kd + lambda_2 * loss_al
+        loss_target = loss_erasure + lambda_1 * loss_kd + lambda_2 * loss_al
 
         optimizer.zero_grad()
         loss_target.backward()
         optimizer.step()
 
-        running_loss += loss_target.item()
+        target_running_loss += loss_target.item()
         loop_target.set_description(f"Teacher {teacher_idx} - Target Epoch [{epoch+1}]")
         loop_target.set_postfix(loss=loss_target.item())
 
-    # Handle non-target classes (to preserve)
+    avg_target_loss = target_running_loss / len(target_train_loader)
+
+    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], TEACHER {teacher_idx} Average TARGET (to forget) Loss: {avg_target_loss:.4f}")
+
     loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
     for data, labels in loop_non_target:
         data, labels = data.to(device), labels.to(device)
@@ -265,6 +279,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
 
     avg_loss = running_loss / (len(target_train_loader) + len(non_target_train_loader))
     scheduler.step(avg_loss)
+    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], TEACHER {teacher_idx} Average NON TARGET (to preserve) Loss: {avg_target_loss:.4f}")
 
     # Validation
     teacher_model.eval()
