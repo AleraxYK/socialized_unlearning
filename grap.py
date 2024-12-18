@@ -1,34 +1,27 @@
 import matplotlib.pyplot as plt
 
-out = []
-aloss = []
 t0 = []
 t1 = []
-with open("output.txt", "r") as f:
+t2 = []
+t3 = []
+t4 = []
+
+with open("outLearning.txt", "r") as f:
 
     for line in f:
-        if "STUDENT Validation Loss:" in line:
-            out.append(float(line.split(" ")[-1]))
-        elif "Epoch [" in line and "50], Average NON TARGET Loss:" in line:
-            aloss.append(float(line.split(" ")[-1]))
-        elif "TEACHER 0 Validation Loss:" in line:
-            t0.append(float(line.split(" ")[-1]))
-        elif "TEACHER 1 Validation Loss:" in line:
-            t1.append(float(line.split(" ")[-1]))
+        if "Student learning Validation Loss:" in line: t0.append(float(line.split(" ")[-1]))
+        elif "Teacher 1 learning Validation Loss:" in line: t1.append(float(line.split(" ")[-1]))
+        elif "Teacher 2 learning Validation Loss:" in line: t2.append(float(line.split(" ")[-1]))
+        elif "Teacher 3 learning Validation Loss:" in line: t3.append(float(line.split(" ")[-1]))
+        elif "Teacher 4 learning Validation Loss:" in line: t4.append(float(line.split(" ")[-1]))
 
-print("out:", len(out))
-print("aloss:", len(aloss))
-print("t0:", len(t0))
-print("t1:", len(t1))
-
+print(len(t0),len(t1),len(t2),len(t3),len(t4))
 plt.figure(figsize=(15, 5))
-plt.plot(range(1,51), out, label="Validation")
-plt.plot(range(1,51), aloss, label="Training")
-plt.plot(range(1,51), t0, label="Teacher 0")
-plt.plot(range(1,51), t1, label="Teacher 1")
+plt.plot(range(1,51), t0, label="Student")
+
 
 plt.legend()
-plt.title("Unlearning")
+plt.title("Learning")
 plt.xlabel("Epochs")
 plt.ylabel("Loss")
 plt.grid()
