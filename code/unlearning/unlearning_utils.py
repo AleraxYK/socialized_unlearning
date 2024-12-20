@@ -100,7 +100,6 @@ def classifier_extractor(model, data):
     classifier = nn.Sequential(*list(model.children())[-3:])
     return classifier(data)
 
-
 # accuracy 
 def evaluate_model (model, loader, device):
     '''
