@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from tqdm import tqdm
 import os
 from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_knowledge_distillation_loss, erasure_loss
@@ -40,6 +41,8 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
     # Forget target classes
     forget_classes = [0, 4]
+    training_energies_target = torch.tensor([], device=device)
+    training_energies_non_target = torch.tensor([], device=device)
 
     for data, labels in loop_target:
         data, labels = data.to(device), labels.to(device)
@@ -58,7 +61,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
                 loss_kd += unlearning_knowledge_distillation_loss(teacher_output1, teacher_output2)
 
-        loss_kd /= len(teacher_models)  # Normalize the KD loss
+        # loss_kd /= len(teacher_models)  # Normalize the KD loss
         lambda_1 = initial_lambda_1 * (1 - epoch / num_epochs)
 
         lambda_loss_kd = lambda_1 * loss_kd
@@ -68,7 +71,8 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         lambda_loss_erasure = lambda_3 * loss_erasure
 
         # Energy alignment loss
-        loss_al = unlearning_energy_alignment_loss(student_output, delta_target)
+        loss_al, training_energies_target = unlearning_energy_alignment_loss(student_output, training_energies_target)
+        # print(f"ENERGY ALLIGNMENT LOSS: {loss_al}")
         lambda_loss_al = lambda_2 * loss_al
 
         # Total loss
@@ -145,6 +149,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
             # Cross-entropy loss for non-target classes
             loss_ce = criterion_ce(student_output, labels)
+            # print(f"CROSS ENTROPY LOSS: {loss_ce}")
 
             # Knowledge distillation loss for non-target classes
             loss_kd = 0
@@ -155,11 +160,13 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
                 teacher_output2 = teacher_model(data)
 
                 loss_kd += unlearning_knowledge_distillation_loss(teacher_output1, teacher_output2)
-
+            # print(f"KNOWLEDGE DISTILLATION LOSS BEFORE NORM: {loss_kd}")
             loss_kd /= len(teacher_models)
+            # print(f"KNOWLEDGE DISTILLATION LOSS AFTER NORM: {loss_kd}")
 
             # Energy alignment loss for non-target classes
-            loss_energy_non_target = unlearning_energy_alignment_loss(student_output, delta_non_target)
+            loss_energy_non_target, training_energies_non_target = unlearning_energy_alignment_loss(student_output, training_energies_non_target)
+            # print(f"ENERGY ALLIGNMENT LOSS: {loss_energy_non_target}")
 
             # Total loss
             loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_energy_non_target
@@ -210,7 +217,9 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
     running_loss = 0
     target_running_loss = 0
 
-    forget_classes = [0, 4]  # Classi da dimenticare
+    forget_classes = [0, 4]  # Forget set classes
+    training_energies_target = torch.tensor([], device=device)
+    training_energies_non_target = torch.tensor([], device=device)
 
     # Handle target classes (to forget)
     loop_target = tqdm(target_train_loader, total=len(target_train_loader), leave=True)
@@ -230,7 +239,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         loss_kd = unlearning_knowledge_distillation_loss(teacher_output_after_student, teacher_output)
 
         # Energy Alignment Loss
-        loss_al = unlearning_energy_alignment_loss(teacher_output, delta_target)
+        loss_al, training_energies_target = unlearning_energy_alignment_loss(teacher_output, training_energies_target)
         lambda_1 = initial_lambda_1 * (1 - epoch / num_epochs)
 
         # Total loss for target classes
@@ -298,7 +307,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
             teacher_output_after_student = classifier_extractor(teacher_model, student_features)
             loss_kd = unlearning_knowledge_distillation_loss(teacher_output_after_student, teacher_output)
 
-            loss_al = unlearning_energy_alignment_loss(teacher_output, delta_non_target)
+            loss_al, training_energies_non_target = unlearning_energy_alignment_loss(teacher_output, training_energies_non_target)
 
             loss = loss_ce + initial_lambda_1 * loss_kd + lambda_2 * loss_al
             val_loss += loss.item()
@@ -325,6 +334,8 @@ def find_freezable_params(model, retain_set, ce_loss):
     Returns:
         - model: model with freezed params
     """
+    print(f"Freezing the params of the model...")
+    params_freezed = []
     loop_target = tqdm(retain_set, total=len(retain_set), leave=True)
     # Compute gradients to see which params are involved more during the computation
     for input, targets in loop_target:
@@ -333,13 +344,15 @@ def find_freezable_params(model, retain_set, ce_loss):
         loss.backward()
     
     # Freezing part
-    threshold = 0.01
-    for name, param in model.named_parameters():
+    threshold = 10
+    for idx, (name, param) in enumerate(model.named_parameters()):
         if param.grad is not None:
             grad_norm = param.grad.norm().item()
             print(f"Gradient norm for {name}: {grad_norm}")
             if grad_norm > threshold:
+                params_freezed.append(idx)
                 print(f"Freezing parameter: {name}")
                 param.require_grad = False
+    print(f"Freezing complete")
 
-    return model
+    return model#, params_freezed

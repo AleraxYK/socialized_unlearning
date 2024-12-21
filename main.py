@@ -15,7 +15,27 @@ if pl.system() == "Darwin":
 else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def socialized_learning(student_model, teacher_models, optimizer_student, optimizer_teachers, criterion_ce, num_epochs, student_scheduler, teachers_scheduler):
+def socialized_learning():
+    teacher_models = [create_model() for _ in range(5)]
+    for idx in range(5):
+        # agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', map_location="mps", weights_only=True))
+        teacher_models[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', weights_only=True))
+        teacher_models[idx].to(device)
+
+    student_model = create_model()
+    student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth", weights_only=True))
+    student_model.to(device)
+
+    # Optimizer and loss
+    optimizer_student = optim.Adam(student_model.parameters(), lr=0.005)
+    optimizer_teachers = [optim.Adam(teacher_models[idx].parameters(), lr=0.005) for idx in range(5)]
+    criterion_ce = torch.nn.CrossEntropyLoss()
+
+    student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
+    teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
+
+    num_epochs = 50 # SET TO 50
+    
     best_student_loss = 0
     best_teachers_losses = [0 for _ in range(len(teacher_models))]
     # Dataset
@@ -36,45 +56,48 @@ def socialized_learning(student_model, teacher_models, optimizer_student, optimi
     print("Evaluating student model...")
     evaluate_model(student_model, test_loader, device)
 
-# TODO: DA SISTEMARE COME IL LEARNING
 def socialized_unlearning():
     #### ENVIRONMENT CONFIGURATION ####
     # Models:
-    agents_unlearning = [create_model() for _ in range(2)]  # Crea 2 agenti modello
+    agents_unlearning = [create_model() for _ in range(2)]  # create 2 agents
     for idx in range(2):
-        # Carica i pesi pre-addestrati degli agenti per l'unlearning
+        # load pre-trained weights for the agents
         agents_unlearning[idx].load_state_dict(torch.load(
             'code/preprocessing/checkpoint/unlearning_agent_' + str(idx) + '_trained_model.pth', weights_only=True))
-        agents_unlearning[idx].to(device)  # Sposta il modello sul dispositivo (es. CPU o GPU)
+        agents_unlearning[idx].to(device)
 
-    # Creazione del modello studente per l'unlearning
+    # Creation of the student model
     student_unlearning = create_model()
-    # Carica i pesi pre-addestrati del modello studente
+    # Load pretrained weights
     student_unlearning.load_state_dict(torch.load(
         "code/preprocessing/checkpoint/unlearning_student_trained_model.pth", weights_only=True))
     student_unlearning.to(device)
 
     
-    criterion_ce = torch.nn.CrossEntropyLoss()  # Funzione di perdita: CrossEntropyLoss
+    criterion_ce = torch.nn.CrossEntropyLoss()  # Loss function
 
     target_classes = [0, 4]
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
     target_train_loader, non_target_train_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1], dataset_loaders[2]
     # FREEZE params that are influenced more by the retain set
-    student_model = find_freezable_params(student_model, non_target_train_loader, criterion_ce)
-    teacher_models = [find_freezable_params(teacher_models[i], non_target_train_loader, criterion_ce) for i in range(2)]
+    student_model = find_freezable_params(student_unlearning, non_target_train_loader, criterion_ce)
+    # _, params_target = find_freezable_params(student_unlearning, target_train_loader, criterion_ce)
+    teacher_models = [find_freezable_params(agents_unlearning[i], non_target_train_loader, criterion_ce) for i in range(2)]
+    # print(f"paramteri target len: {len(params_target)}")
+    # print(f"paramteri non target len: {len(params_nontarget)}")
+    # print(f"Parametri in comune: {[valore for valore in params_target if valore in params_nontarget]}")
 
-    # Ottimizzatori e funzione di perdita
-    optimizer_student = optim.Adam(filter(lambda p: p.requires_grad, student_model.parameters()), lr=0.005)  # Ottimizzatore per lo studente
-    optimizer_teachers = [optim.Adam(filter(lambda p: p.requires_grad, teacher_models[idx].parameters()), lr=0.005) for idx in range(2)]  # Ottimizzatori per agenti
+    # Optimization
+    optimizer_student = optim.Adam(filter(lambda p: p.requires_grad, student_model.parameters()), lr=0.005) 
+    optimizer_teachers = [optim.Adam(filter(lambda p: p.requires_grad, teacher_models[idx].parameters()), lr=0.005) for idx in range(2)]
 
-    # Scheduler del tasso di apprendimento
+    # Scheduler
     student_scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer_student, mode='min', factor=0.1, patience=5, verbose=True)
     teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
     
-    num_epochs = 50  # Numero di epoche per l'unlearning
+    num_epochs = 50
 
     #### END ENVIRONMENT CONFIGURATION ####
 
@@ -88,15 +111,21 @@ def socialized_unlearning():
             teacher_models[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses[teacher_idx] = unlearning_reciprocal_altruism(epoch, num_epochs, best_teachers_losses[teacher_idx], teacher_idx, teacher_model, student_model, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, teachers_scheduler[teacher_idx], device=device)
 
     
-    # TODO: fixare la evaluation con le metrics che avevamo deciso di usare
-    student_model = create_model()
-    student_model.load_state_dict(torch.load("code/checkpoint/UNLEARNED_student_trained_model.pth", weights_only=True))
-    student_model.to(device)
-    print("Evaluating student model after unlearning...")
-    evaluate_model(student_model, non_target_test_loader, device)
-    print("Evaluating teachers models after unlearning...")
+    # # TODO: fixare la evaluation con le metrics che avevamo deciso di usare
+    # student_model = create_model()
+    # student_model.load_state_dict(torch.load("code/checkpoint/UNLEARNED_student_trained_model.pth", weights_only=True))
+    # student_model.to(device)
+    # print("Evaluating student model after unlearning...")
+    # evaluate_model(student_model, non_target_test_loader, device)
+    # print("Evaluating teachers models after unlearning...")
      
 
 if __name__ == "__main__":
-    # Chiamata alla funzione di unlearning sociale
-    socialized_unlearning()
+    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
+    match(choice):
+        case 0:
+            # LEARNING
+            socialized_learning()
+        case 1:
+            # UNLEARNING
+            socialized_unlearning()

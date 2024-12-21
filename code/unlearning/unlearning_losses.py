@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
-def unlearning_energy_alignment_loss(predictions: torch.Tensor, delta: float, target_mask: torch.Tensor = None) -> torch.Tensor:
+def unlearning_energy_alignment_loss(predictions: torch.Tensor, training_energies_target) -> torch.Tensor:
     """
     # Unlearning Energy Alignment Loss
 
@@ -19,16 +20,11 @@ def unlearning_energy_alignment_loss(predictions: torch.Tensor, delta: float, ta
     Returns:
         - torch.Tensor: A scalar tensor representing the calculated loss value.
     """
-    energy = -torch.logsumexp(-predictions, dim=1)
-    
-    if target_mask is not None:
-        # Apply different penalties for target and non-target classes
-        target_energy_loss = ((energy[target_mask] - delta) ** 2).mean()  # Target classes: reduce energy
-        non_target_energy_loss = ((energy[~target_mask] - delta) ** 2).mean()  # Non-target classes: retain energy
-        return target_energy_loss + non_target_energy_loss
-    else:
-        # No mask, apply uniformly
-        return ((energy - delta) ** 2).mean()
+    energy = -torch.logsumexp(predictions, dim=1)
+    training_energies_target = torch.cat((training_energies_target, energy))
+    delta = training_energies_target.mean().item()
+
+    return ((energy - delta) ** 2).mean(), training_energies_target
 
 
 def unlearning_knowledge_distillation_loss(student_output: torch.Tensor, teacher_output: torch.Tensor, target_mask: torch.Tensor = None, temperature: float=2) -> torch.Tensor:
