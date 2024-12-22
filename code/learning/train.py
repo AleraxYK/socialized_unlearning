@@ -5,7 +5,7 @@ from .losses import energy_alignment_loss, knowledge_distillation_loss
 from .utils import feature_extractor, classifier_extractor
 
 # Collaborative Collaboration
-def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2=0.1, delta=-20, device="cpu") -> float:
+def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, train_loader, val_loader, optimizer, criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2=0.1, delta=-20, device="mps") -> float:
     """
     # Collaborative Collaboration Training Function
 

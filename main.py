@@ -120,12 +120,14 @@ def socialized_unlearning():
     # print("Evaluating teachers models after unlearning...")
      
 
+
+
 if __name__ == "__main__":
-    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
-    match(choice):
-        case 0:
+    #choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
+    #match(choice):
+        #case 0:
             # LEARNING
-            socialized_learning()
-        case 1:
+            #socialized_learning()
+        #case 1:
             # UNLEARNING
             socialized_unlearning()
