@@ -7,7 +7,7 @@ from code.learning.train import collaborative_collaboration, reciprocal_altruism
 from code.learning.utils import get_cifar10_dataloaders, evaluate_model
 # Unlearning
 from code.unlearning.unlearning_train import collaborative_unlearning, unlearning_reciprocal_altruism, find_freezable_params
-from code.unlearning.unlearning_utils import evaluate_model, unlearning_get_cifar10_dataloaders
+from code.unlearning.unlearning_utils import evaluate_model, unlearning_get_cifar10_dataloaders, show_params
 
 # Configurazione
 if pl.system() == "Darwin":
@@ -78,7 +78,7 @@ def socialized_unlearning():
 
     target_classes = [0, 4]
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
-    target_train_loader, non_target_train_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1], dataset_loaders[2]
+    target_train_loader, non_target_train_loader, target_test_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1][0], dataset_loaders[1][1], dataset_loaders[2]
     # FREEZE params that are influenced more by the retain set
     student_model = find_freezable_params(student_unlearning, non_target_train_loader, criterion_ce)
     # _, params_target = find_freezable_params(student_unlearning, target_train_loader, criterion_ce)
@@ -97,7 +97,7 @@ def socialized_unlearning():
     teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
     
-    num_epochs = 50
+    num_epochs = 20
 
     #### END ENVIRONMENT CONFIGURATION ####
 
@@ -118,6 +118,43 @@ def socialized_unlearning():
     # print("Evaluating student model after unlearning...")
     # evaluate_model(student_model, non_target_test_loader, device)
     # print("Evaluating teachers models after unlearning...")
+
+def evaluation():
+    # Models:
+    agents_unlearning = [create_model() for _ in range(2)]  # create 2 agents
+    for idx in range(2):
+        # load pre-trained weights for the agents
+        agents_unlearning[idx].load_state_dict(torch.load(
+            'code/checkpoint/UNLEARNED_teacher_' + str(idx) + '_trained_model.pth', weights_only=True))
+        agents_unlearning[idx].to(device)
+
+    # Creation of the student model
+    student_unlearning = create_model()
+    # Load pretrained weights
+    # student_unlearning.load_state_dict(torch.load(
+    #     "code/checkpoint/UNLEARNED_student_trained_model.pth", weights_only=True))
+    student_unlearning.load_state_dict(torch.load(
+        "code/checkpoint/UNLEARNED_student_trained_model.pth", map_location="cpu", weights_only=True))
+    student_unlearning.to(device)
+
+    # show_params(student_unlearning)
+    
+
+    # Datasets:
+    target_classes = [0, 4]
+    dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
+    target_train_loader, non_target_train_loader, target_test_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1][0], dataset_loaders[1][1], dataset_loaders[2]
+
+    # Evaluation:
+    print(f"STUDENT Evaluate on forget set: ")
+    evaluate_model(student_unlearning, target_test_loader, device=device)
+    print(f"STUDENT Evaluate on retain set: ")
+    evaluate_model(student_unlearning, target_test_loader, device=device)
+    for idx, teacher in enumerate(agents_unlearning):
+        print(f"TEACHER {idx} Evaluate on forget set: ")
+        evaluate_model(teacher, target_test_loader, device=device)
+        print(f"TEACHER {idx} Evaluate on retain set: ")
+        evaluate_model(teacher, target_test_loader, device=device)
      
 
 
@@ -130,4 +167,5 @@ if __name__ == "__main__":
             #socialized_learning()
         #case 1:
             # UNLEARNING
-            socialized_unlearning()
+    socialized_unlearning()
+    evaluation()

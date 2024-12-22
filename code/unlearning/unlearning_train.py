@@ -186,7 +186,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 # Reciprocal Altruism
 def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, 
                                  target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, 
-                                 criterion_ce, scheduler, initial_lambda_1: float=0.5, lambda_2: float=0.3, 
+                                 criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.3, 
                                  delta_target: float=-5, delta_non_target: float=-20, device: str="") -> float:
     """
     Reciprocal Altruism Training Function with separate handling for target and non-target classes.
@@ -344,7 +344,7 @@ def find_freezable_params(model, retain_set, ce_loss):
         loss.backward()
     
     # Freezing part
-    threshold = 10
+    threshold = 5
     for idx, (name, param) in enumerate(model.named_parameters()):
         if param.grad is not None:
             grad_norm = param.grad.norm().item()
@@ -355,4 +355,4 @@ def find_freezable_params(model, retain_set, ce_loss):
                 param.require_grad = False
     print(f"Freezing complete")
 
-    return model#, params_freezed
+    return model

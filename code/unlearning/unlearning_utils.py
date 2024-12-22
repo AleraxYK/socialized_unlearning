@@ -51,6 +51,7 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
     non_target_train_data = filter_dataset(train_dataset, target_classes, non_keep=False)
     
     # TEST
+    target_test_data = filter_dataset(test_dataset, target_classes, non_keep=True)
     non_target_test_data = filter_dataset(test_dataset, target_classes, non_keep=False)
 
     # VALIDATION
@@ -59,11 +60,12 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
     target_train_loader = DataLoader(target_train_data, batch_size=batch_size, shuffle=True)
     non_target_train_loader = DataLoader(non_target_train_data, batch_size=batch_size, shuffle=True)
 
+    target_test_loader = DataLoader(target_test_data, batch_size=batch_size, shuffle=True)
     non_target_test_loader = DataLoader(non_target_test_data, batch_size=batch_size, shuffle=True)
 
     non_target_val_loader = DataLoader(non_target_val_data, batch_size=batch_size, shuffle=True)
 
-    return ((target_train_loader, non_target_train_loader), non_target_test_loader, non_target_val_loader)
+    return ((target_train_loader, non_target_train_loader), (target_test_loader, non_target_test_loader), non_target_val_loader)
 
 
 # Filter dataset to exclude classes
@@ -99,6 +101,11 @@ def feature_extractor(model, data):
 def classifier_extractor(model, data):
     classifier = nn.Sequential(*list(model.children())[-3:])
     return classifier(data)
+
+def show_params(model):
+    for idx, (name, param) in enumerate(model.named_parameters()):
+        print(f"Param: {param}")
+
 
 # accuracy 
 def evaluate_model (model, loader, device):
