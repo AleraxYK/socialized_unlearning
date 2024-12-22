@@ -324,35 +324,48 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
     return teacher_model, optimizer, scheduler, best_loss
 
 
-def find_freezable_params(model, retain_set, ce_loss):
+def find_freezable_params(model, retain_set, ce_loss, threshold=5):
     """
-    Function that freeze the parameters that are mostly involved by the retain set
+    Freeze the parameters that are most influenced by the retain set.
 
     Args:
-        - model: our trainable model
-    
+        model (torch.nn.Module): The trainable model.
+        retain_set (DataLoader): The retain set DataLoader.
+        ce_loss (torch.nn.Module): CrossEntropyLoss function.
+        threshold (float): Gradient norm threshold for freezing parameters.
+
     Returns:
-        - model: model with freezed params
+        torch.nn.Module: Model with frozen parameters.
     """
-    print(f"Freezing the params of the model...")
-    params_freezed = []
-    loop_target = tqdm(retain_set, total=len(retain_set), leave=True)
-    # Compute gradients to see which params are involved more during the computation
-    for input, targets in loop_target:
-        outputs = model(input)
-        loss = ce_loss(outputs, targets)
-        loss.backward()
+    print(f"Freezing the parameters of the model...")
+    model.train()  # Ensure the model is in training mode.
     
-    # Freezing part
-    threshold = 5
-    for idx, (name, param) in enumerate(model.named_parameters()):
-        if param.grad is not None:
-            grad_norm = param.grad.norm().item()
-            print(f"Gradient norm for {name}: {grad_norm}")
-            if grad_norm > threshold:
-                params_freezed.append(idx)
-                print(f"Freezing parameter: {name}")
-                param.require_grad = False
-    print(f"Freezing complete")
+    # Move model to the same device as the data
+    device = next(model.parameters()).device
+    
+    params_to_freeze = []
+    
+    # Loop through the retain set
+    for inputs, targets in tqdm(retain_set, total=len(retain_set), leave=True, desc="Analyzing gradients"):
+        # Move inputs and targets to the same device as the model
+        inputs, targets = inputs.to(device), targets.to(device)
+        
+        # Forward pass
+        outputs = model(inputs)
+        loss = ce_loss(outputs, targets)
+        
+        # Backward pass
+        model.zero_grad()  # Clear existing gradients
+        loss.backward()
+        
+        # Analyze gradients for each parameter
+        for name, param in model.named_parameters():
+            if param.grad is not None:
+                grad_norm = param.grad.norm().item()
+                
+                # Freeze the parameter if its gradient norm exceeds the threshold
+                if grad_norm > threshold and param.requires_grad:
+                    params_to_freeze.append(name)
+                    param.requires_grad = False  # Freeze the parameter
 
     return model

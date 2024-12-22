@@ -19,11 +19,11 @@ def socialized_learning():
     teacher_models = [create_model() for _ in range(5)]
     for idx in range(5):
         # agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', map_location="mps", weights_only=True))
-        teacher_models[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', weights_only=True))
+        teacher_models[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth',map_location='mps', weights_only=True))
         teacher_models[idx].to(device)
 
     student_model = create_model()
-    student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth", weights_only=True))
+    student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth",map_location='mps', weights_only=True))
     student_model.to(device)
 
     # Optimizer and loss
@@ -63,14 +63,14 @@ def socialized_unlearning():
     for idx in range(2):
         # load pre-trained weights for the agents
         agents_unlearning[idx].load_state_dict(torch.load(
-            'code/preprocessing/checkpoint/unlearning_agent_' + str(idx) + '_trained_model.pth', weights_only=True))
+            'code/preprocessing/checkpoint/unlearning_agent_' + str(idx) + '_trained_model.pth',map_location='mps', weights_only=True))
         agents_unlearning[idx].to(device)
 
     # Creation of the student model
     student_unlearning = create_model()
     # Load pretrained weights
     student_unlearning.load_state_dict(torch.load(
-        "code/preprocessing/checkpoint/unlearning_student_trained_model.pth", weights_only=True))
+        "code/preprocessing/checkpoint/unlearning_student_trained_model.pth", map_location='mps', weights_only=True))
     student_unlearning.to(device)
 
     
@@ -97,7 +97,7 @@ def socialized_unlearning():
     teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
     
-    num_epochs = 20
+    num_epochs = 50
 
     #### END ENVIRONMENT CONFIGURATION ####
 
@@ -125,7 +125,7 @@ def evaluation():
     for idx in range(2):
         # load pre-trained weights for the agents
         agents_unlearning[idx].load_state_dict(torch.load(
-            'code/checkpoint/UNLEARNED_teacher_' + str(idx) + '_trained_model.pth', weights_only=True))
+            'code/checkpoint/UNLEARNED_teacher_' + str(idx) + '_trained_model.pth',map_location='mps', weights_only=True))
         agents_unlearning[idx].to(device)
 
     # Creation of the student model
@@ -134,12 +134,56 @@ def evaluation():
     # student_unlearning.load_state_dict(torch.load(
     #     "code/checkpoint/UNLEARNED_student_trained_model.pth", weights_only=True))
     student_unlearning.load_state_dict(torch.load(
-        "code/checkpoint/UNLEARNED_student_trained_model.pth", map_location="cpu", weights_only=True))
+        "code/checkpoint/UNLEARNED_student_trained_model.pth", map_location="mps", weights_only=True))
     student_unlearning.to(device)
 
     # show_params(student_unlearning)
     
 
+def evaluation2():
+    # Configura il device
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    # Creazione dei modelli degli agenti
+    agents_unlearning = [create_model() for _ in range(2)]
+    for idx in range(2):
+        checkpoint_path = f'code/checkpoint/UNLEARNED_teacher_{idx}_trained_model.pth'
+        print(f"Loading weights for agent {idx} from {checkpoint_path}...")
+
+        try:
+            checkpoint = torch.load(checkpoint_path, map_location=device)
+            agents_unlearning[idx].load_state_dict(checkpoint)
+            agents_unlearning[idx].to(device)
+            print(f"Agent {idx} loaded successfully.")
+        except Exception as e:
+            print(f"Error loading agent {idx}: {e}")
+            return
+
+    # Creazione del modello dello studente
+    student_checkpoint_path = "code/checkpoint/UNLEARNED_student_trained_model.pth"
+    print(f"Loading student model from {student_checkpoint_path}...")
+    student_unlearning = create_model()
+
+    try:
+        checkpoint = torch.load(student_checkpoint_path, map_location=device)
+        student_unlearning.load_state_dict(checkpoint)
+        student_unlearning.to(device)
+    except Exception as e:
+        print(f"Error loading student model: {e}")
+        return
+
+    # Esegui un forward pass di test per verificare i modelli
+    dummy_input = torch.randn(1, 3, 224, 224).to(device)  # Cambia la dimensione in base al tuo modello
+    try:
+        for idx, agent in enumerate(agents_unlearning):
+            output = agent(dummy_input)
+            print(f"Agent {idx} test output shape: {output.shape}")
+
+        student_output = student_unlearning(dummy_input)
+        print(f"Student model test output shape: {student_output.shape}")
+    except Exception as e:
+        print(f"Error during forward pass: {e}")
     # Datasets:
     target_classes = [0, 4]
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
@@ -167,5 +211,5 @@ if __name__ == "__main__":
             #socialized_learning()
         #case 1:
             # UNLEARNING
-    socialized_unlearning()
-    evaluation()
+    #socialized_unlearning()
+    evaluation2()

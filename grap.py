@@ -2,26 +2,22 @@ import matplotlib.pyplot as plt
 
 t0 = []
 t1 = []
-t2 = []
-t3 = []
-t4 = []
+s  = []
 
-with open("outLearning.txt", "r") as f:
+with open("outUnlearning.txt", "r") as f:
 
     for line in f:
-        if "Teacher 0 learning Validation Loss:" in line: t0.append(float(line.split(" ")[-1]))
-        elif "Teacher 1 learning Validation Loss:" in line: t1.append(float(line.split(" ")[-1]))
-        elif "Teacher 2 learning Validation Loss:" in line: t2.append(float(line.split(" ")[-1]))
-        elif "Teacher 3 learning Validation Loss:" in line: t3.append(float(line.split(" ")[-1]))
-        elif "Teacher 4 learning Validation Loss:" in line: t4.append(float(line.split(" ")[-1]))
+        if "TEACHER 0 Validation Loss:" in line: t0.append(float(line.split(" ")[-1]))
+        elif "TEACHER 1 Validation Loss:" in line: t1.append(float(line.split(" ")[-1]))
+        elif "STUDENT Validation Loss:" in line: s.append(float(line.split(" ")[-1]))
 
-print(len(t0),len(t1),len(t2),len(t3),len(t4))
+print(len(t0),len(t1), len(s))
+
 plt.figure(figsize=(15, 5))
 plt.plot(range(1,51), t0, label="T0")
 plt.plot(range(1,51), t1, label="T1")
-plt.plot(range(1,51), t2, label="T2")
-plt.plot(range(1,51), t3, label="T3")
-plt.plot(range(1,51), t4, label="T4")
+plt.plot(range(1,51), s, label="S")
+
 
 plt.legend()
 plt.title("Learning")

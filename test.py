@@ -13,7 +13,7 @@ else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 student_model = create_model()
-student_model.load_state_dict(torch.load("code/checkpoint/UNLEARNED_student_trained_model.pth", weights_only=True))
+student_model.load_state_dict(torch.load("code/checkpoint/UNLEARNED_student_trained_model.pth", map_location='mps',weights_only=True))
 student_model.to(device)
 
 target_classes = [0, 4]
