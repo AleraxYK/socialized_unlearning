@@ -324,7 +324,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
     return teacher_model, optimizer, scheduler, best_loss
 
 
-def find_freezable_params(model, retain_set, ce_loss, threshold=5):
+def find_freezable_params(model, retain_set, ce_loss, device, threshold=5):
     """
     Freeze the parameters that are most influenced by the retain set.
 
@@ -339,11 +339,6 @@ def find_freezable_params(model, retain_set, ce_loss, threshold=5):
     """
     print(f"Freezing the parameters of the model...")
     model.train()  # Ensure the model is in training mode.
-    
-    # Move model to the same device as the data
-    device = next(model.parameters()).device
-    
-    params_to_freeze = []
     
     # Loop through the retain set
     for inputs, targets in tqdm(retain_set, total=len(retain_set), leave=True, desc="Analyzing gradients"):
@@ -365,7 +360,6 @@ def find_freezable_params(model, retain_set, ce_loss, threshold=5):
                 
                 # Freeze the parameter if its gradient norm exceeds the threshold
                 if grad_norm > threshold and param.requires_grad:
-                    params_to_freeze.append(name)
                     param.requires_grad = False  # Freeze the parameter
 
     return model

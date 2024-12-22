@@ -108,19 +108,30 @@ def show_params(model):
 
 
 # accuracy 
-def evaluate_model (model, loader, device):
+def evaluate_model(model, loader, device):
     '''
     Function to calculate the accuracy of the model on the test set
     '''
+    model.eval()  # Set the model to evaluation mode
     correct = 0
     total = 0
-    for data, targets in loader:
-        data = data.to(device=device)
-        targets = targets.to(device=device)
-        scores = model(data)
-        _, predictions = scores.max(1)
-        correct += (predictions == targets).sum()
-        total += targets.shape[0]
     
-    acc = correct / total
-    print(f"Accuracy: {100 * acc}")
+    with torch.no_grad():  # Disable gradient calculation
+        for data, targets in loader:
+            data = data.to(device)
+            targets = targets.to(device)
+            
+            # Get model predictions
+            scores = model(data)
+            # percentage = torch.softmax(scores, dim=1)
+            predictions = torch.argmax(scores, dim=1)  # Get the index of the max logit
+
+            print(f"PREDICTIONS: {predictions[0]}")
+            print(f"TARGETS: {targets[0]}")
+            
+            correct += (predictions == targets).sum().item()  # Convert tensor to scalar
+            total += targets.size(0)  # Total number of samples
+    
+    acc = correct / total  # Calculate accuracy
+    print(f"CORRECT: {correct}, TOTAL: {total}")
+    print(f"Accuracy: {100 * acc:.2f}%")  # Print with 2 decimal places

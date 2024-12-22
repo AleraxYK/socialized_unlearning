@@ -80,9 +80,9 @@ def socialized_unlearning():
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
     target_train_loader, non_target_train_loader, target_test_loader, non_target_test_loader, non_target_val_loader = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1][0], dataset_loaders[1][1], dataset_loaders[2]
     # FREEZE params that are influenced more by the retain set
-    student_model = find_freezable_params(student_unlearning, non_target_train_loader, criterion_ce)
+    student_model = find_freezable_params(student_unlearning, non_target_train_loader, criterion_ce, device)
     # _, params_target = find_freezable_params(student_unlearning, target_train_loader, criterion_ce)
-    teacher_models = [find_freezable_params(agents_unlearning[i], non_target_train_loader, criterion_ce) for i in range(2)]
+    teacher_models = [find_freezable_params(agents_unlearning[i], non_target_train_loader, criterion_ce, device) for i in range(2)]
     # print(f"paramteri target len: {len(params_target)}")
     # print(f"paramteri non target len: {len(params_nontarget)}")
     # print(f"Parametri in comune: {[valore for valore in params_target if valore in params_nontarget]}")
@@ -141,18 +141,13 @@ def evaluation():
     
 
 def evaluation2():
-    # Configura il device
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    print(f"Using device: {device}")
-
-    # Creazione dei modelli degli agenti
     agents_unlearning = [create_model() for _ in range(2)]
     for idx in range(2):
         checkpoint_path = f'code/checkpoint/UNLEARNED_teacher_{idx}_trained_model.pth'
         print(f"Loading weights for agent {idx} from {checkpoint_path}...")
 
         try:
-            checkpoint = torch.load(checkpoint_path, map_location=device)
+            checkpoint = torch.load(checkpoint_path, weights_only=True, map_location=device)
             agents_unlearning[idx].load_state_dict(checkpoint)
             agents_unlearning[idx].to(device)
             print(f"Agent {idx} loaded successfully.")
@@ -160,30 +155,18 @@ def evaluation2():
             print(f"Error loading agent {idx}: {e}")
             return
 
-    # Creazione del modello dello studente
     student_checkpoint_path = "code/checkpoint/UNLEARNED_student_trained_model.pth"
     print(f"Loading student model from {student_checkpoint_path}...")
     student_unlearning = create_model()
 
     try:
-        checkpoint = torch.load(student_checkpoint_path, map_location=device)
+        checkpoint = torch.load(student_checkpoint_path, weights_only=True, map_location=device)
         student_unlearning.load_state_dict(checkpoint)
         student_unlearning.to(device)
+        print(f"Student loaded successfully.")
     except Exception as e:
         print(f"Error loading student model: {e}")
         return
-
-    # Esegui un forward pass di test per verificare i modelli
-    dummy_input = torch.randn(1, 3, 224, 224).to(device)  # Cambia la dimensione in base al tuo modello
-    try:
-        for idx, agent in enumerate(agents_unlearning):
-            output = agent(dummy_input)
-            print(f"Agent {idx} test output shape: {output.shape}")
-
-        student_output = student_unlearning(dummy_input)
-        print(f"Student model test output shape: {student_output.shape}")
-    except Exception as e:
-        print(f"Error during forward pass: {e}")
     # Datasets:
     target_classes = [0, 4]
     dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
