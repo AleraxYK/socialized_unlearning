@@ -55,11 +55,9 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
                 modified_input = feature_extractor(student_model, data)
                 teacher_output1 = classifier_extractor(teacher_model, modified_input)
                 teacher_output2 = teacher_model(data)
-                # teacher_output = teacher_model(data)
                 
                 # Compute knowledge distillation loss tra la predizione del teacher e dello studente
                 loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
-                # loss_kd += knowledge_distillation_loss(student_output, teacher_output)
         # print(f"KD LOSS: {loss_kd}")
 
         # Normalize the KD loss
@@ -139,7 +137,7 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         # Calculate average loss for the epoch
         avg_val_loss = val_loss / len(val_loader)
 
-        print(f"Student learning Validation Loss: {avg_val_loss:.4f}")
+        print(f"\033[34mStudent learning Validation Loss: {avg_val_loss:.4f}\033[0m")
         # if avg val_loss is better than the one before, save the model
         if epoch == 0:
             # create directory if not exist
@@ -197,7 +195,6 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
         # Distillation loss for the current teacher
         with torch.no_grad():
             student_features = feature_extractor(student_model, data)
-            student_output = classifier_extractor(student_model, student_features)
 
         teacher_output_after_student = classifier_extractor(teacher_model, student_features)
 
@@ -260,7 +257,7 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
         # Calculate average loss for the epoch
         avg_val_loss = val_loss / len(val_loader)
 
-        print(f"Teacher {teacher_idx} learning Validation Loss: {avg_val_loss:.4f}")
+        print(f"\033[34mTeacher {teacher_idx} learning Validation Loss: {avg_val_loss:.4f}\033[0m")
         # if avg val_loss is better than the one before, save the model
         if epoch == 0:
             # create directory if not exist

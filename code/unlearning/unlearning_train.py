@@ -6,7 +6,7 @@ from .unlearning_losses import unlearning_energy_alignment_loss, unlearning_know
 from .unlearning_utils import feature_extractor, classifier_extractor
 
 # Collaborative Unlearning
-def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.1, lambda_3: float=0.5, delta_target: float=-5, delta_non_target: float=-20, device="mps") -> float:
+def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, target_train_loader, non_target_val_loader, optimizer, criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.1, lambda_3: float=0.5, device="mps") -> float:
     """
     Collaborative Unlearning Training with additional Cross Entropy Loss based on disagreement.
 
@@ -17,7 +17,6 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         - student_model: The student model being trained.
         - teacher_models: List of teacher models for knowledge distillation.
         - target_train_loader: DataLoader for training data containing target classes that has to be forgotten.
-        - non_target_train_loader: DataLoader for training data containing non-target classes.
         - non_target_val_loader: DataLoader for validation data containing non-target classes.
         - optimizer: Optimizer used for updating the model parameters.
         - criterion_ce: Cross-entropy loss function.
@@ -34,7 +33,6 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         - best_loss (float): Best validation loss recorded during training.
     """
     student_model.train()
-    running_loss = 0
     target_running_loss = 0
 
     loop_target = tqdm(target_train_loader, total=len(target_train_loader), leave=True)
@@ -84,57 +82,14 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         target_running_loss += loss.item()
 
         # Update progress bar
-        loop_target.set_description(f"Student - Target Epoch [{epoch+1}]")
+        loop_target.set_description(f"\033[31mStudent unlearning Epoch [{epoch+1}]\033[0m")
         loop_target.set_postfix(loss=loss.item())
 
     avg_target_loss = target_running_loss / len(target_train_loader)
 
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], STUDENT Average TARGET (to forget) Loss: {avg_target_loss:.4f}")
+    tqdm.write(f"\033[31mStudent unlearning Epoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_target_loss:.4f}")
 
-    # loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
-
-    # Preserve non-target classes by using energy alignment and cross-entropy
-    # TODO: capire se invece di allenare congelare i parametri influenzati dal retain set in modo da mantenere le prestazioni
-    # for data, labels in loop_non_target:
-    #     data, labels = data.to(device), labels.to(device)
-    #     optimizer.zero_grad()
-
-    #     # Student output
-    #     student_output = student_model(data)
-
-    #     # Cross-entropy loss for non-target classes
-    #     loss_ce = criterion_ce(student_output, labels)
-
-    #     # Knowledge distillation loss for non-target classes
-    #     loss_kd = 0
-    #     for teacher_model in teacher_models:
-    #         teacher_model.eval()
-    #         modified_input = feature_extractor(student_model, data)
-    #         teacher_output1 = classifier_extractor(teacher_model, modified_input)
-    #         teacher_output2 = teacher_model(data)
-
-    #         loss_kd += unlearning_knowledge_distillation_loss(teacher_output1, teacher_output2)
-
-    #     loss_kd /= len(teacher_models)
-
-    #     # Energy alignment loss for non-target classes
-    #     loss_energy_non_target = unlearning_energy_alignment_loss(student_output, delta_non_target)
-
-    #     # Total loss for non-target classes (preservation)
-    #     loss = loss_ce + lambda_1 * loss_kd + lambda_2 * loss_energy_non_target
-    #     loss.backward()
-    #     optimizer.step()
-
-    #     running_loss += loss.item()
-
-    #     # Update progress bar
-    #     loop_non_target.set_description(f"Student - Non-target Epoch [{epoch+1}]")
-    #     loop_non_target.set_postfix(loss=loss.item())
-
-    # avg_loss = running_loss / len(non_target_train_loader)
-    # scheduler.step(avg_loss)
-
-    # tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], STUDENT Average NON TARGET (to preserve) Loss: {avg_loss:.4f}")
+    
 
     #### VALIDATION ####
     student_model.eval()
@@ -174,7 +129,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
         avg_val_loss = val_loss / len(non_target_val_loader)
 
-        print(f"STUDENT Validation Loss: {avg_val_loss:.4f}")
+        print(f"\033[31mStudent unlearning Validation Loss: {avg_val_loss:.4f}\033[0m")
         if epoch == 0 or avg_val_loss < best_loss:
             best_loss = avg_val_loss
             os.makedirs("checkpoint", exist_ok=True)
@@ -185,9 +140,8 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
 
 # Reciprocal Altruism
 def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_idx: int, teacher_model, student_model, 
-                                 target_train_loader, non_target_train_loader, non_target_val_loader, optimizer, 
-                                 criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.3, 
-                                 delta_target: float=-5, delta_non_target: float=-20, device: str="") -> float:
+                                 target_train_loader, non_target_val_loader, optimizer, 
+                                 criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.3, device="mps") -> float:
     """
     Reciprocal Altruism Training Function with separate handling for target and non-target classes.
 
@@ -214,7 +168,6 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         - float: The updated best validation loss.
     """
     teacher_model.train()
-    running_loss = 0
     target_running_loss = 0
 
     forget_classes = [0, 4]  # Forget set classes
@@ -250,47 +203,12 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         optimizer.step()
 
         target_running_loss += loss_target.item()
-        loop_target.set_description(f"Teacher {teacher_idx} - Target Epoch [{epoch+1}]")
+        loop_target.set_description(f"\033[31mTeacher {teacher_idx} unlearning Epoch [{epoch+1}]\033[0m")
         loop_target.set_postfix(loss=loss_target.item())
 
     avg_target_loss = target_running_loss / len(target_train_loader)
 
-    tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], TEACHER {teacher_idx} Average TARGET (to forget) Loss: {avg_target_loss:.4f}")
-
-    # TODO: capire se invece di allenare congelare i parametri influenzati dal retain set in modo da mantenere le prestazioni
-    # loop_non_target = tqdm(non_target_train_loader, total=len(non_target_train_loader), leave=True)
-    # for data, labels in loop_non_target:
-    #     data, labels = data.to(device), labels.to(device)
-
-    #     # Teacher's direct output
-    #     teacher_output = teacher_model(data)
-
-    #     # Cross-Entropy Loss for non-target classes
-    #     loss_ce = criterion_ce(teacher_output, labels)
-
-    #     # Distillation Loss (teacher follows student)
-    #     with torch.no_grad():
-    #         student_features = feature_extractor(student_model, data)
-    #     teacher_output_after_student = classifier_extractor(teacher_model, student_features)
-    #     loss_kd = unlearning_knowledge_distillation_loss(teacher_output_after_student, teacher_output)
-
-    #     # Energy Alignment Loss
-    #     loss_al = unlearning_energy_alignment_loss(teacher_output, delta_non_target)
-
-    #     # Total loss for non-target classes
-    #     loss_non_target = loss_ce + initial_lambda_1 * loss_kd + lambda_2 * loss_al
-
-    #     optimizer.zero_grad()
-    #     loss_non_target.backward()
-    #     optimizer.step()
-
-    #     running_loss += loss_non_target.item()
-    #     loop_non_target.set_description(f"Teacher {teacher_idx} - Non-Target Epoch [{epoch+1}]")
-    #     loop_non_target.set_postfix(loss=loss_non_target.item())
-
-    # avg_loss = running_loss / (len(target_train_loader) + len(non_target_train_loader))
-    # scheduler.step(avg_loss)
-    # tqdm.write(f"Epoch [{epoch+1}/{num_epochs}], TEACHER {teacher_idx} Average NON TARGET (to preserve) Loss: {avg_target_loss:.4f}")
+    tqdm.write(f"\033[31mTeacher {teacher_idx} unlearning Epoch [{epoch+1}/{num_epochs}]\033[0m, Average Loss: {avg_target_loss:.4f}")
 
     # Validation
     teacher_model.eval()
@@ -314,7 +232,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
 
         avg_val_loss = val_loss / len(non_target_val_loader)
 
-        print(f"TEACHER {teacher_idx} Validation Loss: {avg_val_loss:.4f}")
+        print(f"\033[31mTeacher {teacher_idx} learning Validation Loss: {avg_val_loss:.4f}\033[0m")
 
         if epoch == 0 or avg_val_loss < best_loss:
             best_loss = avg_val_loss
@@ -322,44 +240,3 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
             torch.save(teacher_model.state_dict(), f"./code/checkpoint/UNLEARNED_teacher_{teacher_idx}_trained_model.pth")
 
     return teacher_model, optimizer, scheduler, best_loss
-
-
-def find_freezable_params(model, retain_set, ce_loss, device, threshold=5):
-    """
-    Freeze the parameters that are most influenced by the retain set.
-
-    Args:
-        model (torch.nn.Module): The trainable model.
-        retain_set (DataLoader): The retain set DataLoader.
-        ce_loss (torch.nn.Module): CrossEntropyLoss function.
-        threshold (float): Gradient norm threshold for freezing parameters.
-
-    Returns:
-        torch.nn.Module: Model with frozen parameters.
-    """
-    print(f"Freezing the parameters of the model...")
-    model.train()  # Ensure the model is in training mode.
-    
-    # Loop through the retain set
-    for inputs, targets in tqdm(retain_set, total=len(retain_set), leave=True, desc="Analyzing gradients"):
-        # Move inputs and targets to the same device as the model
-        inputs, targets = inputs.to(device), targets.to(device)
-        
-        # Forward pass
-        outputs = model(inputs)
-        loss = ce_loss(outputs, targets)
-        
-        # Backward pass
-        model.zero_grad()  # Clear existing gradients
-        loss.backward()
-        
-        # Analyze gradients for each parameter
-        for name, param in model.named_parameters():
-            if param.grad is not None:
-                grad_norm = param.grad.norm().item()
-                
-                # Freeze the parameter if its gradient norm exceeds the threshold
-                if grad_norm > threshold and param.requires_grad:
-                    param.requires_grad = False  # Freeze the parameter
-
-    return model

@@ -126,8 +126,8 @@ def evaluate_model(model, loader, device):
             # percentage = torch.softmax(scores, dim=1)
             predictions = torch.argmax(scores, dim=1)  # Get the index of the max logit
 
-            print(f"PREDICTIONS: {predictions[0]}")
-            print(f"TARGETS: {targets[0]}")
+            # print(f"PREDICTIONS: {predictions[0]}")
+            # print(f"TARGETS: {targets[0]}")
             
             correct += (predictions == targets).sum().item()  # Convert tensor to scalar
             total += targets.size(0)  # Total number of samples
