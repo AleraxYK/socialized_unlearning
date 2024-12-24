@@ -232,7 +232,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
 
         avg_val_loss = val_loss / len(non_target_val_loader)
 
-        print(f"\033[31mTeacher {teacher_idx} learning Validation Loss: {avg_val_loss:.4f}\033[0m")
+        print(f"\033[31mTeacher {teacher_idx} unlearning Validation Loss: {avg_val_loss:.4f}\033[0m")
 
         if epoch == 0 or avg_val_loss < best_loss:
             best_loss = avg_val_loss
