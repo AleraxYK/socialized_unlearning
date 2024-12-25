@@ -8,6 +8,7 @@ from code.learning.utils import get_cifar10_dataloaders, evaluate_model
 # Unlearning
 from code.unlearning.unlearning_train import collaborative_unlearning, unlearning_reciprocal_altruism
 from code.unlearning.unlearning_utils import evaluate_model, unlearning_get_cifar10_dataloaders
+from code.unlearning.evaluations import retention_score_computation
 
 # Configurazione
 if pl.system() == "Darwin":
@@ -109,59 +110,14 @@ def socialized_unlearning():
             agents_unlearning[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses_unlearning[teacher_idx] = unlearning_reciprocal_altruism(epoch, num_epochs, best_teachers_losses_unlearning[teacher_idx], teacher_idx, teacher_model, student_model, target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, teachers_scheduler[teacher_idx], device=device)
             agents_unlearning[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses_learning[teacher_idx] = reciprocal_altruism(epoch, num_epochs, best_teachers_losses_learning[teacher_idx], teacher_idx, teacher_model, student_model, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, teachers_scheduler[teacher_idx], device=device)
 
-def evaluation():
-    agents_unlearning = [create_model() for _ in range(2)]
-    for idx in range(2):
-        checkpoint_path = f'code/checkpoint/UNLEARNED_teacher_{idx}_trained_model.pth'
-        print(f"Loading weights for agent {idx} from {checkpoint_path}...")
-
-        try:
-            checkpoint = torch.load(checkpoint_path, weights_only=True, map_location=device)
-            agents_unlearning[idx].load_state_dict(checkpoint)
-            agents_unlearning[idx].to(device)
-            print(f"Agent {idx} loaded successfully.")
-        except Exception as e:
-            print(f"Error loading agent {idx}: {e}")
-            return
-
-    student_checkpoint_path = "code/checkpoint/UNLEARNED_student_trained_model.pth"
-    print(f"Loading student model from {student_checkpoint_path}...")
-    student_unlearning = create_model()
-
-    try:
-        checkpoint = torch.load(student_checkpoint_path, weights_only=True, map_location=device)
-        student_unlearning.load_state_dict(checkpoint)
-        student_unlearning.to(device)
-        print(f"Student loaded successfully.")
-    except Exception as e:
-        print(f"Error loading student model: {e}")
-        return
-    # Datasets:
-    target_classes = [0, 4]
-    dataset_loaders = unlearning_get_cifar10_dataloaders(batch_size=512, target_classes=target_classes)
-    _, _, target_test_loader, non_target_test_loader, _ = dataset_loaders[0][0], dataset_loaders[0][1], dataset_loaders[1][0], dataset_loaders[1][1], dataset_loaders[2]
-
-    # Evaluation:
-    print(f"STUDENT Evaluate on forget set: ")
-    evaluate_model(student_unlearning, target_test_loader, device=device)
-    print(f"STUDENT Evaluate on retain set: ")
-    evaluate_model(student_unlearning, non_target_test_loader, device=device)
-    for idx, teacher in enumerate(agents_unlearning):
-        print(f"TEACHER {idx} Evaluate on forget set: ")
-        evaluate_model(teacher, target_test_loader, device=device)
-        print(f"TEACHER {idx} Evaluate on retain set: ")
-        evaluate_model(teacher, non_target_test_loader, device=device)
-     
-
-
-
 if __name__ == "__main__":
-    #choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n"))
-    #match(choice):
-        #case 0:
+    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n2: Compute retention Score"))
+    match(choice):
+        case 0:
             # LEARNING
-            #socialized_learning()
-        #case 1:
+            socialized_learning()
+        case 1:
             # UNLEARNING
-    socialized_unlearning()
-    # evaluation()
+            socialized_unlearning()
+        case 2:
+            retention_score_computation()

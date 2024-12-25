@@ -133,5 +133,6 @@ def evaluate_model(model, loader, device):
             total += targets.size(0)  # Total number of samples
     
     acc = correct / total  # Calculate accuracy
-    print(f"CORRECT: {correct}, TOTAL: {total}")
+    # print(f"CORRECT: {correct}, TOTAL: {total}")
     print(f"Accuracy: {100 * acc:.2f}%")  # Print with 2 decimal places
+    return 100 * acc
