@@ -1,0 +1,650 @@
+Epoch 1: Unlearning Step
+Student unlearning Epoch [1/50], Average Loss: 1.7605
+Student unlearning Validation Loss: 3.8002
+Student learning Epoch [1/50], Average Loss: 2.1333
+Student learning Validation Loss: 1.7252
+Teacher 0 unlearning Epoch [1/50], Average Loss: 0.4559
+Teacher 0 unlearning Validation Loss: 2.4096
+Teacher 0 learning Epoch [1/50], Average Loss: 3.5845
+Teacher 0 learning Validation Loss: 1.5380
+Teacher 1 unlearning Epoch [1/50], Average Loss: 0.3935
+Teacher 1 unlearning Validation Loss: 2.1308
+Teacher 1 learning Epoch [1/50], Average Loss: 3.3410
+Teacher 1 learning Validation Loss: 1.7687
+Epoch 2: Unlearning Step
+Student unlearning Epoch [2/50], Average Loss: 0.6549
+Student unlearning Validation Loss: 2.2473
+Student learning Epoch [2/50], Average Loss: 1.4594
+Student learning Validation Loss: 1.2790
+Teacher 0 unlearning Epoch [2/50], Average Loss: 0.1820
+Teacher 0 unlearning Validation Loss: 1.7082
+Teacher 0 learning Epoch [2/50], Average Loss: 3.1710
+Teacher 0 learning Validation Loss: 1.4831
+Teacher 1 unlearning Epoch [2/50], Average Loss: 0.2005
+Teacher 1 unlearning Validation Loss: 1.7649
+Teacher 1 learning Epoch [2/50], Average Loss: 3.2103
+Teacher 1 learning Validation Loss: 1.2999
+Epoch 3: Unlearning Step
+Student unlearning Epoch [3/50], Average Loss: 0.6122
+Student unlearning Validation Loss: 2.1788
+Student learning Epoch [3/50], Average Loss: 1.3285
+Student learning Validation Loss: 1.1506
+Teacher 0 unlearning Epoch [3/50], Average Loss: 0.1776
+Teacher 0 unlearning Validation Loss: 1.6263
+Teacher 0 learning Epoch [3/50], Average Loss: 3.0745
+Teacher 0 learning Validation Loss: 1.2962
+Teacher 1 unlearning Epoch [3/50], Average Loss: 0.1984
+Teacher 1 unlearning Validation Loss: 1.6502
+Teacher 1 learning Epoch [3/50], Average Loss: 3.0836
+Teacher 1 learning Validation Loss: 1.3424
+Epoch 4: Unlearning Step
+Student unlearning Epoch [4/50], Average Loss: 0.6932
+Student unlearning Validation Loss: 2.8945
+Student learning Epoch [4/50], Average Loss: 1.3474
+Student learning Validation Loss: 1.0892
+Teacher 0 unlearning Epoch [4/50], Average Loss: 0.1667
+Teacher 0 unlearning Validation Loss: 1.5550
+Teacher 0 learning Epoch [4/50], Average Loss: 3.0648
+Teacher 0 learning Validation Loss: 1.2114
+Teacher 1 unlearning Epoch [4/50], Average Loss: 0.1993
+Teacher 1 unlearning Validation Loss: 1.5472
+Teacher 1 learning Epoch [4/50], Average Loss: 3.0735
+Teacher 1 learning Validation Loss: 1.5564
+Epoch 5: Unlearning Step
+Student unlearning Epoch [5/50], Average Loss: 0.6197
+Student unlearning Validation Loss: 2.0018
+Student learning Epoch [5/50], Average Loss: 1.2299
+Student learning Validation Loss: 1.1216
+Teacher 0 unlearning Epoch [5/50], Average Loss: 0.1798
+Teacher 0 unlearning Validation Loss: 1.5016
+Teacher 0 learning Epoch [5/50], Average Loss: 2.9965
+Teacher 0 learning Validation Loss: 1.3282
+Teacher 1 unlearning Epoch [5/50], Average Loss: 0.1978
+Teacher 1 unlearning Validation Loss: 1.5406
+Teacher 1 learning Epoch [5/50], Average Loss: 3.0107
+Teacher 1 learning Validation Loss: 1.2731
+Epoch 6: Unlearning Step
+Student unlearning Epoch [6/50], Average Loss: 0.4893
+Student unlearning Validation Loss: 2.2793
+Student learning Epoch [6/50], Average Loss: 1.2061
+Student learning Validation Loss: 1.4289
+Teacher 0 unlearning Epoch [6/50], Average Loss: 0.2116
+Teacher 0 unlearning Validation Loss: 1.9389
+Teacher 0 learning Epoch [6/50], Average Loss: 3.0671
+Teacher 0 learning Validation Loss: 1.2889
+Teacher 1 unlearning Epoch [6/50], Average Loss: 0.2137
+Teacher 1 unlearning Validation Loss: 1.6928
+Teacher 1 learning Epoch [6/50], Average Loss: 3.0101
+Teacher 1 learning Validation Loss: 1.5070
+Epoch 7: Unlearning Step
+Student unlearning Epoch [7/50], Average Loss: 0.6378
+Student unlearning Validation Loss: 2.4244
+Student learning Epoch [7/50], Average Loss: 1.2311
+Student learning Validation Loss: 1.0835
+Teacher 0 unlearning Epoch [7/50], Average Loss: 0.1758
+Teacher 0 unlearning Validation Loss: 1.8227
+Teacher 0 learning Epoch [7/50], Average Loss: 2.9581
+Teacher 0 learning Validation Loss: 1.2923
+Teacher 1 unlearning Epoch [7/50], Average Loss: 0.2066
+Teacher 1 unlearning Validation Loss: 1.8318
+Teacher 1 learning Epoch [7/50], Average Loss: 2.9071
+Teacher 1 learning Validation Loss: 1.2512
+Epoch 8: Unlearning Step
+Student unlearning Epoch [8/50], Average Loss: 0.6508
+Student unlearning Validation Loss: 2.1322
+Student learning Epoch [8/50], Average Loss: 1.1387
+Student learning Validation Loss: 0.9801
+Teacher 0 unlearning Epoch [8/50], Average Loss: 0.1822
+Teacher 0 unlearning Validation Loss: 1.3714
+Teacher 0 learning Epoch [8/50], Average Loss: 2.7573
+Teacher 0 learning Validation Loss: 1.1653
+Teacher 1 unlearning Epoch [8/50], Average Loss: 0.1875
+Teacher 1 unlearning Validation Loss: 1.3230
+Teacher 1 learning Epoch [8/50], Average Loss: 2.7394
+Teacher 1 learning Validation Loss: 1.2306
+Epoch 9: Unlearning Step
+Student unlearning Epoch [9/50], Average Loss: 0.5467
+Student unlearning Validation Loss: 1.6082
+Student learning Epoch [9/50], Average Loss: 1.0679
+Student learning Validation Loss: 0.8866
+Teacher 0 unlearning Epoch [9/50], Average Loss: 0.1780
+Teacher 0 unlearning Validation Loss: 1.3244
+Teacher 0 learning Epoch [9/50], Average Loss: 2.6760
+Teacher 0 learning Validation Loss: 1.2160
+Teacher 1 unlearning Epoch [9/50], Average Loss: 0.2063
+Teacher 1 unlearning Validation Loss: 1.3773
+Teacher 1 learning Epoch [9/50], Average Loss: 2.6674
+Teacher 1 learning Validation Loss: 1.0906
+Epoch 10: Unlearning Step
+Student unlearning Epoch [10/50], Average Loss: 0.5012
+Student unlearning Validation Loss: 1.9648
+Student learning Epoch [10/50], Average Loss: 1.0413
+Student learning Validation Loss: 0.8663
+Teacher 0 unlearning Epoch [10/50], Average Loss: 0.2035
+Teacher 0 unlearning Validation Loss: 1.3551
+Teacher 0 learning Epoch [10/50], Average Loss: 2.6097
+Teacher 0 learning Validation Loss: 1.2537
+Teacher 1 unlearning Epoch [10/50], Average Loss: 0.1982
+Teacher 1 unlearning Validation Loss: 1.4065
+Teacher 1 learning Epoch [10/50], Average Loss: 2.6533
+Teacher 1 learning Validation Loss: 1.2219
+Epoch 11: Unlearning Step
+Student unlearning Epoch [11/50], Average Loss: 0.5885
+Student unlearning Validation Loss: 1.8550
+Student learning Epoch [11/50], Average Loss: 1.0501
+Student learning Validation Loss: 0.9071
+Teacher 0 unlearning Epoch [11/50], Average Loss: 0.1967
+Teacher 0 unlearning Validation Loss: 1.6994
+Teacher 0 learning Epoch [11/50], Average Loss: 2.5628
+Teacher 0 learning Validation Loss: 1.0257
+Teacher 1 unlearning Epoch [11/50], Average Loss: 0.2099
+Teacher 1 unlearning Validation Loss: 1.3618
+Teacher 1 learning Epoch [11/50], Average Loss: 2.5224
+Teacher 1 learning Validation Loss: 1.1449
+Epoch 12: Unlearning Step
+Student unlearning Epoch [12/50], Average Loss: 0.4199
+Student unlearning Validation Loss: 1.8328
+Student learning Epoch [12/50], Average Loss: 1.0004
+Student learning Validation Loss: 0.8293
+Teacher 0 unlearning Epoch [12/50], Average Loss: 0.1751
+Teacher 0 unlearning Validation Loss: 1.3728
+Teacher 0 learning Epoch [12/50], Average Loss: 2.4630
+Teacher 0 learning Validation Loss: 1.0105
+Teacher 1 unlearning Epoch [12/50], Average Loss: 0.2145
+Teacher 1 unlearning Validation Loss: 1.3584
+Teacher 1 learning Epoch [12/50], Average Loss: 2.4718
+Teacher 1 learning Validation Loss: 1.1999
+Epoch 13: Unlearning Step
+Student unlearning Epoch [13/50], Average Loss: 0.4297
+Student unlearning Validation Loss: 1.8790
+Student learning Epoch [13/50], Average Loss: 0.9941
+Student learning Validation Loss: 0.8473
+Teacher 0 unlearning Epoch [13/50], Average Loss: 0.2126
+Teacher 0 unlearning Validation Loss: 1.4095
+Teacher 0 learning Epoch [13/50], Average Loss: 2.3517
+Teacher 0 learning Validation Loss: 1.0473
+Teacher 1 unlearning Epoch [13/50], Average Loss: 0.2206
+Teacher 1 unlearning Validation Loss: 1.2852
+Teacher 1 learning Epoch [13/50], Average Loss: 2.4194
+Teacher 1 learning Validation Loss: 1.2855
+Epoch 14: Unlearning Step
+Student unlearning Epoch [14/50], Average Loss: 0.5842
+Student unlearning Validation Loss: 1.5865
+Student learning Epoch [14/50], Average Loss: 0.9912
+Student learning Validation Loss: 0.8754
+Teacher 0 unlearning Epoch [14/50], Average Loss: 0.1850
+Teacher 0 unlearning Validation Loss: 1.4622
+Teacher 0 learning Epoch [14/50], Average Loss: 2.3168
+Teacher 0 learning Validation Loss: 0.9241
+Teacher 1 unlearning Epoch [14/50], Average Loss: 0.2227
+Teacher 1 unlearning Validation Loss: 1.5172
+Teacher 1 learning Epoch [14/50], Average Loss: 2.3887
+Teacher 1 learning Validation Loss: 0.9470
+Epoch 15: Unlearning Step
+Student unlearning Epoch [15/50], Average Loss: 0.4618
+Student unlearning Validation Loss: 1.8473
+Student learning Epoch [15/50], Average Loss: 0.9449
+Student learning Validation Loss: 0.8439
+Teacher 0 unlearning Epoch [15/50], Average Loss: 0.2118
+Teacher 0 unlearning Validation Loss: 1.5339
+Teacher 0 learning Epoch [15/50], Average Loss: 2.2550
+Teacher 0 learning Validation Loss: 1.0243
+Teacher 1 unlearning Epoch [15/50], Average Loss: 0.2207
+Teacher 1 unlearning Validation Loss: 1.6681
+Teacher 1 learning Epoch [15/50], Average Loss: 2.3541
+Teacher 1 learning Validation Loss: 1.1162
+Epoch 16: Unlearning Step
+Student unlearning Epoch [16/50], Average Loss: 0.5043
+Student unlearning Validation Loss: 1.7037
+Student learning Epoch [16/50], Average Loss: 0.9509
+Student learning Validation Loss: 0.8376
+Teacher 0 unlearning Epoch [16/50], Average Loss: 0.1836
+Teacher 0 unlearning Validation Loss: 1.5601
+Teacher 0 learning Epoch [16/50], Average Loss: 2.1862
+Teacher 0 learning Validation Loss: 0.9925
+Teacher 1 unlearning Epoch [16/50], Average Loss: 0.1971
+Teacher 1 unlearning Validation Loss: 1.6519
+Teacher 1 learning Epoch [16/50], Average Loss: 2.2700
+Teacher 1 learning Validation Loss: 1.0672
+Epoch 17: Unlearning Step
+Student unlearning Epoch [17/50], Average Loss: 0.4978
+Student unlearning Validation Loss: 2.0949
+Student learning Epoch [17/50], Average Loss: 0.9453
+Student learning Validation Loss: 0.9209
+Teacher 0 unlearning Epoch [17/50], Average Loss: 0.2035
+Teacher 0 unlearning Validation Loss: 1.7881
+Teacher 0 learning Epoch [17/50], Average Loss: 2.1670
+Teacher 0 learning Validation Loss: 0.8497
+Teacher 1 unlearning Epoch [17/50], Average Loss: 0.2154
+Teacher 1 unlearning Validation Loss: 1.6815
+Teacher 1 learning Epoch [17/50], Average Loss: 2.1653
+Teacher 1 learning Validation Loss: 0.8960
+Epoch 18: Unlearning Step
+Student unlearning Epoch [18/50], Average Loss: 0.5033
+Student unlearning Validation Loss: 2.2335
+Student learning Epoch [18/50], Average Loss: 0.9308
+Student learning Validation Loss: 0.7116
+Teacher 0 unlearning Epoch [18/50], Average Loss: 0.1844
+Teacher 0 unlearning Validation Loss: 1.3278
+Teacher 0 learning Epoch [18/50], Average Loss: 2.0536
+Teacher 0 learning Validation Loss: 0.8293
+Teacher 1 unlearning Epoch [18/50], Average Loss: 0.1954
+Teacher 1 unlearning Validation Loss: 1.3938
+Teacher 1 learning Epoch [18/50], Average Loss: 2.1370
+Teacher 1 learning Validation Loss: 0.9414
+Epoch 19: Unlearning Step
+Student unlearning Epoch [19/50], Average Loss: 0.4180
+Student unlearning Validation Loss: 1.5807
+Student learning Epoch [19/50], Average Loss: 0.8653
+Student learning Validation Loss: 0.7338
+Teacher 0 unlearning Epoch [19/50], Average Loss: 0.1972
+Teacher 0 unlearning Validation Loss: 1.3846
+Teacher 0 learning Epoch [19/50], Average Loss: 2.0007
+Teacher 0 learning Validation Loss: 0.9000
+Teacher 1 unlearning Epoch [19/50], Average Loss: 0.2106
+Teacher 1 unlearning Validation Loss: 1.5561
+Teacher 1 learning Epoch [19/50], Average Loss: 2.0811
+Teacher 1 learning Validation Loss: 0.8909
+Epoch 20: Unlearning Step
+Student unlearning Epoch [20/50], Average Loss: 0.4159
+Student unlearning Validation Loss: 1.5523
+Student learning Epoch [20/50], Average Loss: 0.8769
+Student learning Validation Loss: 0.7743
+Teacher 0 unlearning Epoch [20/50], Average Loss: 0.1858
+Teacher 0 unlearning Validation Loss: 1.3904
+Teacher 0 learning Epoch [20/50], Average Loss: 1.9437
+Teacher 0 learning Validation Loss: 0.8746
+Teacher 1 unlearning Epoch [20/50], Average Loss: 0.1962
+Teacher 1 unlearning Validation Loss: 1.3307
+Teacher 1 learning Epoch [20/50], Average Loss: 2.0668
+Teacher 1 learning Validation Loss: 0.9198
+Epoch 21: Unlearning Step
+Student unlearning Epoch [21/50], Average Loss: 0.3328
+Student unlearning Validation Loss: 1.3616
+Student learning Epoch [21/50], Average Loss: 0.8445
+Student learning Validation Loss: 0.6890
+Teacher 0 unlearning Epoch [21/50], Average Loss: 0.1845
+Teacher 0 unlearning Validation Loss: 1.5586
+Teacher 0 learning Epoch [21/50], Average Loss: 1.8911
+Teacher 0 learning Validation Loss: 0.7431
+Teacher 1 unlearning Epoch [21/50], Average Loss: 0.1835
+Teacher 1 unlearning Validation Loss: 1.7336
+Teacher 1 learning Epoch [21/50], Average Loss: 2.0169
+Teacher 1 learning Validation Loss: 0.8862
+Epoch 22: Unlearning Step
+Student unlearning Epoch [22/50], Average Loss: 0.3836
+Student unlearning Validation Loss: 1.8416
+Student learning Epoch [22/50], Average Loss: 0.8381
+Student learning Validation Loss: 0.6639
+Teacher 0 unlearning Epoch [22/50], Average Loss: 0.1647
+Teacher 0 unlearning Validation Loss: 1.4346
+Teacher 0 learning Epoch [22/50], Average Loss: 1.8451
+Teacher 0 learning Validation Loss: 0.7519
+Teacher 1 unlearning Epoch [22/50], Average Loss: 0.1780
+Teacher 1 unlearning Validation Loss: 1.4338
+Teacher 1 learning Epoch [22/50], Average Loss: 1.9332
+Teacher 1 learning Validation Loss: 0.8353
+Epoch 23: Unlearning Step
+Student unlearning Epoch [23/50], Average Loss: 0.3703
+Student unlearning Validation Loss: 1.6833
+Student learning Epoch [23/50], Average Loss: 0.8164
+Student learning Validation Loss: 0.6240
+Teacher 0 unlearning Epoch [23/50], Average Loss: 0.1821
+Teacher 0 unlearning Validation Loss: 1.4089
+Teacher 0 learning Epoch [23/50], Average Loss: 1.8218
+Teacher 0 learning Validation Loss: 0.7717
+Teacher 1 unlearning Epoch [23/50], Average Loss: 0.1922
+Teacher 1 unlearning Validation Loss: 1.5253
+Teacher 1 learning Epoch [23/50], Average Loss: 1.8802
+Teacher 1 learning Validation Loss: 0.8433
+Epoch 24: Unlearning Step
+Student unlearning Epoch [24/50], Average Loss: 0.4216
+Student unlearning Validation Loss: 1.6446
+Student learning Epoch [24/50], Average Loss: 0.8270
+Student learning Validation Loss: 0.6315
+Teacher 0 unlearning Epoch [24/50], Average Loss: 0.1805
+Teacher 0 unlearning Validation Loss: 1.4894
+Teacher 0 learning Epoch [24/50], Average Loss: 1.7827
+Teacher 0 learning Validation Loss: 0.7386
+Teacher 1 unlearning Epoch [24/50], Average Loss: 0.1752
+Teacher 1 unlearning Validation Loss: 1.4017
+Teacher 1 learning Epoch [24/50], Average Loss: 1.8156
+Teacher 1 learning Validation Loss: 0.7321
+Epoch 25: Unlearning Step
+Student unlearning Epoch [25/50], Average Loss: 0.3993
+Student unlearning Validation Loss: 1.7863
+Student learning Epoch [25/50], Average Loss: 0.8323
+Student learning Validation Loss: 0.7099
+Teacher 0 unlearning Epoch [25/50], Average Loss: 0.1802
+Teacher 0 unlearning Validation Loss: 1.5728
+Teacher 0 learning Epoch [25/50], Average Loss: 1.7650
+Teacher 0 learning Validation Loss: 0.7323
+Teacher 1 unlearning Epoch [25/50], Average Loss: 0.1862
+Teacher 1 unlearning Validation Loss: 1.5526
+Teacher 1 learning Epoch [25/50], Average Loss: 1.7845
+Teacher 1 learning Validation Loss: 0.6927
+Epoch 26: Unlearning Step
+Student unlearning Epoch [26/50], Average Loss: 0.3770
+Student unlearning Validation Loss: 1.9083
+Student learning Epoch [26/50], Average Loss: 0.8110
+Student learning Validation Loss: 0.6209
+Teacher 0 unlearning Epoch [26/50], Average Loss: 0.1755
+Teacher 0 unlearning Validation Loss: 1.3987
+Teacher 0 learning Epoch [26/50], Average Loss: 1.7084
+Teacher 0 learning Validation Loss: 0.7166
+Teacher 1 unlearning Epoch [26/50], Average Loss: 0.1722
+Teacher 1 unlearning Validation Loss: 1.3872
+Teacher 1 learning Epoch [26/50], Average Loss: 1.7136
+Teacher 1 learning Validation Loss: 0.7462
+Epoch 27: Unlearning Step
+Student unlearning Epoch [27/50], Average Loss: 0.3789
+Student unlearning Validation Loss: 1.7433
+Student learning Epoch [27/50], Average Loss: 0.7870
+Student learning Validation Loss: 0.6218
+Teacher 0 unlearning Epoch [27/50], Average Loss: 0.1635
+Teacher 0 unlearning Validation Loss: 1.2317
+Teacher 0 learning Epoch [27/50], Average Loss: 1.6631
+Teacher 0 learning Validation Loss: 0.7327
+Teacher 1 unlearning Epoch [27/50], Average Loss: 0.1766
+Teacher 1 unlearning Validation Loss: 1.3691
+Teacher 1 learning Epoch [27/50], Average Loss: 1.7093
+Teacher 1 learning Validation Loss: 0.7885
+Epoch 28: Unlearning Step
+Student unlearning Epoch [28/50], Average Loss: 0.3295
+Student unlearning Validation Loss: 1.5205
+Student learning Epoch [28/50], Average Loss: 0.7612
+Student learning Validation Loss: 0.6445
+Teacher 0 unlearning Epoch [28/50], Average Loss: 0.1776
+Teacher 0 unlearning Validation Loss: 1.4805
+Teacher 0 learning Epoch [28/50], Average Loss: 1.6433
+Teacher 0 learning Validation Loss: 0.6622
+Teacher 1 unlearning Epoch [28/50], Average Loss: 0.1733
+Teacher 1 unlearning Validation Loss: 1.4290
+Teacher 1 learning Epoch [28/50], Average Loss: 1.6663
+Teacher 1 learning Validation Loss: 0.6935
+Epoch 29: Unlearning Step
+Student unlearning Epoch [29/50], Average Loss: 0.2957
+Student unlearning Validation Loss: 1.5805
+Student learning Epoch [29/50], Average Loss: 0.7367
+Student learning Validation Loss: 0.5994
+Teacher 0 unlearning Epoch [29/50], Average Loss: 0.1739
+Teacher 0 unlearning Validation Loss: 1.3840
+Teacher 0 learning Epoch [29/50], Average Loss: 1.6356
+Teacher 0 learning Validation Loss: 0.6995
+Teacher 1 unlearning Epoch [29/50], Average Loss: 0.1775
+Teacher 1 unlearning Validation Loss: 1.4530
+Teacher 1 learning Epoch [29/50], Average Loss: 1.6692
+Teacher 1 learning Validation Loss: 0.7262
+Epoch 30: Unlearning Step
+Student unlearning Epoch [30/50], Average Loss: 0.3306
+Student unlearning Validation Loss: 1.8769
+Student learning Epoch [30/50], Average Loss: 0.7753
+Student learning Validation Loss: 0.5920
+Teacher 0 unlearning Epoch [30/50], Average Loss: 0.1675
+Teacher 0 unlearning Validation Loss: 1.7591
+Teacher 0 learning Epoch [30/50], Average Loss: 1.6543
+Teacher 0 learning Validation Loss: 0.7185
+Teacher 1 unlearning Epoch [30/50], Average Loss: 0.1821
+Teacher 1 unlearning Validation Loss: 1.3226
+Teacher 1 learning Epoch [30/50], Average Loss: 1.6000
+Teacher 1 learning Validation Loss: 0.7940
+Epoch 31: Unlearning Step
+Student unlearning Epoch [31/50], Average Loss: 0.3481
+Student unlearning Validation Loss: 1.5271
+Student learning Epoch [31/50], Average Loss: 0.7376
+Student learning Validation Loss: 0.6189
+Teacher 0 unlearning Epoch [31/50], Average Loss: 0.1718
+Teacher 0 unlearning Validation Loss: 1.6696
+Teacher 0 learning Epoch [31/50], Average Loss: 1.6068
+Teacher 0 learning Validation Loss: 0.7627
+Teacher 1 unlearning Epoch [31/50], Average Loss: 0.1731
+Teacher 1 unlearning Validation Loss: 1.2848
+Teacher 1 learning Epoch [31/50], Average Loss: 1.5772
+Teacher 1 learning Validation Loss: 0.7380
+Epoch 32: Unlearning Step
+Student unlearning Epoch [32/50], Average Loss: 0.3568
+Student unlearning Validation Loss: 1.8554
+Student learning Epoch [32/50], Average Loss: 0.7501
+Student learning Validation Loss: 0.6083
+Teacher 0 unlearning Epoch [32/50], Average Loss: 0.1755
+Teacher 0 unlearning Validation Loss: 1.5873
+Teacher 0 learning Epoch [32/50], Average Loss: 1.5982
+Teacher 0 learning Validation Loss: 0.6908
+Teacher 1 unlearning Epoch [32/50], Average Loss: 0.1563
+Teacher 1 unlearning Validation Loss: 1.4198
+Teacher 1 learning Epoch [32/50], Average Loss: 1.5527
+Teacher 1 learning Validation Loss: 0.6524
+Epoch 33: Unlearning Step
+Student unlearning Epoch [33/50], Average Loss: 0.2905
+Student unlearning Validation Loss: 1.2943
+Student learning Epoch [33/50], Average Loss: 0.6955
+Student learning Validation Loss: 0.5664
+Teacher 0 unlearning Epoch [33/50], Average Loss: 0.1500
+Teacher 0 unlearning Validation Loss: 1.4018
+Teacher 0 learning Epoch [33/50], Average Loss: 1.5245
+Teacher 0 learning Validation Loss: 0.7046
+Teacher 1 unlearning Epoch [33/50], Average Loss: 0.1572
+Teacher 1 unlearning Validation Loss: 1.4483
+Teacher 1 learning Epoch [33/50], Average Loss: 1.5663
+Teacher 1 learning Validation Loss: 0.6151
+Epoch 34: Unlearning Step
+Student unlearning Epoch [34/50], Average Loss: 0.2772
+Student unlearning Validation Loss: 1.3048
+Student learning Epoch [34/50], Average Loss: 0.6903
+Student learning Validation Loss: 0.6176
+Teacher 0 unlearning Epoch [34/50], Average Loss: 0.1528
+Teacher 0 unlearning Validation Loss: 1.8210
+Teacher 0 learning Epoch [34/50], Average Loss: 1.5684
+Teacher 0 learning Validation Loss: 0.6675
+Teacher 1 unlearning Epoch [34/50], Average Loss: 0.1595
+Teacher 1 unlearning Validation Loss: 1.5144
+Teacher 1 learning Epoch [34/50], Average Loss: 1.5523
+Teacher 1 learning Validation Loss: 0.6226
+Epoch 35: Unlearning Step
+Student unlearning Epoch [35/50], Average Loss: 0.2783
+Student unlearning Validation Loss: 1.5136
+Student learning Epoch [35/50], Average Loss: 0.6896
+Student learning Validation Loss: 0.5565
+Teacher 0 unlearning Epoch [35/50], Average Loss: 0.1614
+Teacher 0 unlearning Validation Loss: 1.4136
+Teacher 0 learning Epoch [35/50], Average Loss: 1.5114
+Teacher 0 learning Validation Loss: 0.6220
+Teacher 1 unlearning Epoch [35/50], Average Loss: 0.1564
+Teacher 1 unlearning Validation Loss: 1.5668
+Teacher 1 learning Epoch [35/50], Average Loss: 1.5362
+Teacher 1 learning Validation Loss: 0.6370
+Epoch 36: Unlearning Step
+Student unlearning Epoch [36/50], Average Loss: 0.2438
+Student unlearning Validation Loss: 1.4304
+Student learning Epoch [36/50], Average Loss: 0.6794
+Student learning Validation Loss: 0.5319
+Teacher 0 unlearning Epoch [36/50], Average Loss: 0.1438
+Teacher 0 unlearning Validation Loss: 1.7437
+Teacher 0 learning Epoch [36/50], Average Loss: 1.5636
+Teacher 0 learning Validation Loss: 0.6919
+Teacher 1 unlearning Epoch [36/50], Average Loss: 0.1516
+Teacher 1 unlearning Validation Loss: 1.4557
+Teacher 1 learning Epoch [36/50], Average Loss: 1.4977
+Teacher 1 learning Validation Loss: 0.6902
+Epoch 37: Unlearning Step
+Student unlearning Epoch [37/50], Average Loss: 0.2909
+Student unlearning Validation Loss: 1.3771
+Student learning Epoch [37/50], Average Loss: 0.6630
+Student learning Validation Loss: 0.5399
+Teacher 0 unlearning Epoch [37/50], Average Loss: 0.1480
+Teacher 0 unlearning Validation Loss: 1.6783
+Teacher 0 learning Epoch [37/50], Average Loss: 1.5204
+Teacher 0 learning Validation Loss: 0.6624
+Teacher 1 unlearning Epoch [37/50], Average Loss: 0.1429
+Teacher 1 unlearning Validation Loss: 1.8181
+Teacher 1 learning Epoch [37/50], Average Loss: 1.6018
+Teacher 1 learning Validation Loss: 0.6517
+Epoch 38: Unlearning Step
+Student unlearning Epoch [38/50], Average Loss: 0.2289
+Student unlearning Validation Loss: 1.7079
+Student learning Epoch [38/50], Average Loss: 0.6695
+Student learning Validation Loss: 0.5367
+Teacher 0 unlearning Epoch [38/50], Average Loss: 0.1405
+Teacher 0 unlearning Validation Loss: 1.5341
+Teacher 0 learning Epoch [38/50], Average Loss: 1.5039
+Teacher 0 learning Validation Loss: 0.5962
+Teacher 1 unlearning Epoch [38/50], Average Loss: 0.1396
+Teacher 1 unlearning Validation Loss: 1.3112
+Teacher 1 learning Epoch [38/50], Average Loss: 1.4698
+Teacher 1 learning Validation Loss: 0.5744
+Epoch 39: Unlearning Step
+Student unlearning Epoch [39/50], Average Loss: 0.1990
+Student unlearning Validation Loss: 1.3122
+Student learning Epoch [39/50], Average Loss: 0.6424
+Student learning Validation Loss: 0.5396
+Teacher 0 unlearning Epoch [39/50], Average Loss: 0.1462
+Teacher 0 unlearning Validation Loss: 1.9609
+Teacher 0 learning Epoch [39/50], Average Loss: 1.5285
+Teacher 0 learning Validation Loss: 0.6006
+Teacher 1 unlearning Epoch [39/50], Average Loss: 0.1351
+Teacher 1 unlearning Validation Loss: 1.4278
+Teacher 1 learning Epoch [39/50], Average Loss: 1.4940
+Teacher 1 learning Validation Loss: 0.5810
+Epoch 40: Unlearning Step
+Student unlearning Epoch [40/50], Average Loss: 0.1947
+Student unlearning Validation Loss: 1.4229
+Student learning Epoch [40/50], Average Loss: 0.6472
+Student learning Validation Loss: 0.5918
+Teacher 0 unlearning Epoch [40/50], Average Loss: 0.1303
+Teacher 0 unlearning Validation Loss: 1.7166
+Teacher 0 learning Epoch [40/50], Average Loss: 1.4764
+Teacher 0 learning Validation Loss: 0.6455
+Teacher 1 unlearning Epoch [40/50], Average Loss: 0.1418
+Teacher 1 unlearning Validation Loss: 1.6261
+Teacher 1 learning Epoch [40/50], Average Loss: 1.4963
+Teacher 1 learning Validation Loss: 0.6317
+Epoch 41: Unlearning Step
+Student unlearning Epoch [41/50], Average Loss: 0.1960
+Student unlearning Validation Loss: 1.5931
+Student learning Epoch [41/50], Average Loss: 0.6534
+Student learning Validation Loss: 0.5096
+Teacher 0 unlearning Epoch [41/50], Average Loss: 0.1359
+Teacher 0 unlearning Validation Loss: 1.6338
+Teacher 0 learning Epoch [41/50], Average Loss: 1.4740
+Teacher 0 learning Validation Loss: 0.6218
+Teacher 1 unlearning Epoch [41/50], Average Loss: 0.1340
+Teacher 1 unlearning Validation Loss: 1.4044
+Teacher 1 learning Epoch [41/50], Average Loss: 1.4798
+Teacher 1 learning Validation Loss: 0.6572
+Epoch 42: Unlearning Step
+Student unlearning Epoch [42/50], Average Loss: 0.1956
+Student unlearning Validation Loss: 1.2645
+Student learning Epoch [42/50], Average Loss: 0.6255
+Student learning Validation Loss: 0.5287
+Teacher 0 unlearning Epoch [42/50], Average Loss: 0.1308
+Teacher 0 unlearning Validation Loss: 1.7179
+Teacher 0 learning Epoch [42/50], Average Loss: 1.4883
+Teacher 0 learning Validation Loss: 0.5559
+Teacher 1 unlearning Epoch [42/50], Average Loss: 0.1332
+Teacher 1 unlearning Validation Loss: 1.7391
+Teacher 1 learning Epoch [42/50], Average Loss: 1.4798
+Teacher 1 learning Validation Loss: 0.5579
+Epoch 43: Unlearning Step
+Student unlearning Epoch [43/50], Average Loss: 0.1506
+Student unlearning Validation Loss: 1.0940
+Student learning Epoch [43/50], Average Loss: 0.6019
+Student learning Validation Loss: 0.4897
+Teacher 0 unlearning Epoch [43/50], Average Loss: 0.1209
+Teacher 0 unlearning Validation Loss: 1.6589
+Teacher 0 learning Epoch [43/50], Average Loss: 1.4486
+Teacher 0 learning Validation Loss: 0.6587
+Teacher 1 unlearning Epoch [43/50], Average Loss: 0.1356
+Teacher 1 unlearning Validation Loss: 1.6089
+Teacher 1 learning Epoch [43/50], Average Loss: 1.4457
+Teacher 1 learning Validation Loss: 0.7349
+Epoch 44: Unlearning Step
+Student unlearning Epoch [44/50], Average Loss: 0.1532
+Student unlearning Validation Loss: 1.5259
+Student learning Epoch [44/50], Average Loss: 0.6282
+Student learning Validation Loss: 0.4810
+Teacher 0 unlearning Epoch [44/50], Average Loss: 0.1286
+Teacher 0 unlearning Validation Loss: 1.6399
+Teacher 0 learning Epoch [44/50], Average Loss: 1.4627
+Teacher 0 learning Validation Loss: 0.5856
+Teacher 1 unlearning Epoch [44/50], Average Loss: 0.1215
+Teacher 1 unlearning Validation Loss: 1.3193
+Teacher 1 learning Epoch [44/50], Average Loss: 1.4015
+Teacher 1 learning Validation Loss: 0.5509
+Epoch 45: Unlearning Step
+Student unlearning Epoch [45/50], Average Loss: 0.1373
+Student unlearning Validation Loss: 1.2597
+Student learning Epoch [45/50], Average Loss: 0.5982
+Student learning Validation Loss: 0.4932
+Teacher 0 unlearning Epoch [45/50], Average Loss: 0.1212
+Teacher 0 unlearning Validation Loss: 1.5577
+Teacher 0 learning Epoch [45/50], Average Loss: 1.4088
+Teacher 0 learning Validation Loss: 0.7142
+Teacher 1 unlearning Epoch [45/50], Average Loss: 0.1247
+Teacher 1 unlearning Validation Loss: 1.7285
+Teacher 1 learning Epoch [45/50], Average Loss: 1.4145
+Teacher 1 learning Validation Loss: 0.5570
+Epoch 46: Unlearning Step
+Student unlearning Epoch [46/50], Average Loss: 0.1461
+Student unlearning Validation Loss: 1.1895
+Student learning Epoch [46/50], Average Loss: 0.5806
+Student learning Validation Loss: 0.6235
+Teacher 0 unlearning Epoch [46/50], Average Loss: 0.1156
+Teacher 0 unlearning Validation Loss: 1.7018
+Teacher 0 learning Epoch [46/50], Average Loss: 1.4148
+Teacher 0 learning Validation Loss: 0.6164
+Teacher 1 unlearning Epoch [46/50], Average Loss: 0.1276
+Teacher 1 unlearning Validation Loss: 1.9119
+Teacher 1 learning Epoch [46/50], Average Loss: 1.3955
+Teacher 1 learning Validation Loss: 0.5531
+Epoch 47: Unlearning Step
+Student unlearning Epoch [47/50], Average Loss: 0.1231
+Student unlearning Validation Loss: 1.2940
+Student learning Epoch [47/50], Average Loss: 0.5897
+Student learning Validation Loss: 0.4770
+Teacher 0 unlearning Epoch [47/50], Average Loss: 0.1159
+Teacher 0 unlearning Validation Loss: 1.5556
+Teacher 0 learning Epoch [47/50], Average Loss: 1.4261
+Teacher 0 learning Validation Loss: 0.5549
+Teacher 1 unlearning Epoch [47/50], Average Loss: 0.1181
+Teacher 1 unlearning Validation Loss: 1.8064
+Teacher 1 learning Epoch [47/50], Average Loss: 1.3752
+Teacher 1 learning Validation Loss: 0.5892
+Epoch 48: Unlearning Step
+Student unlearning Epoch [48/50], Average Loss: 0.1066
+Student unlearning Validation Loss: 1.1792
+Student learning Epoch [48/50], Average Loss: 0.5772
+Student learning Validation Loss: 0.4741
+Teacher 0 unlearning Epoch [48/50], Average Loss: 0.1102
+Teacher 0 unlearning Validation Loss: 1.3470
+Teacher 0 learning Epoch [48/50], Average Loss: 1.3910
+Teacher 0 learning Validation Loss: 0.5698
+Teacher 1 unlearning Epoch [48/50], Average Loss: 0.1198
+Teacher 1 unlearning Validation Loss: 1.8001
+Teacher 1 learning Epoch [48/50], Average Loss: 1.3690
+Teacher 1 learning Validation Loss: 0.5828
+Epoch 49: Unlearning Step
+Student unlearning Epoch [49/50], Average Loss: 0.1041
+Student unlearning Validation Loss: 1.3229
+Student learning Epoch [49/50], Average Loss: 0.5945
+Student learning Validation Loss: 0.4839
+Teacher 0 unlearning Epoch [49/50], Average Loss: 0.1028
+Teacher 0 unlearning Validation Loss: 1.7904
+Teacher 0 learning Epoch [49/50], Average Loss: 1.4162
+Teacher 0 learning Validation Loss: 0.5687
+Teacher 1 unlearning Epoch [49/50], Average Loss: 0.1143
+Teacher 1 unlearning Validation Loss: 1.8512
+Teacher 1 learning Epoch [49/50], Average Loss: 1.3850
+Teacher 1 learning Validation Loss: 0.5919
+Epoch 50: Unlearning Step
+Student unlearning Epoch [50/50], Average Loss: 0.0741
+Student unlearning Validation Loss: 1.7497
+Student learning Epoch [50/50], Average Loss: 0.6295
+Student learning Validation Loss: 0.4863
+Teacher 0 unlearning Epoch [50/50], Average Loss: 0.1034
+Teacher 0 unlearning Validation Loss: 2.0344
+Teacher 0 learning Epoch [50/50], Average Loss: 1.4004
+Teacher 0 learning Validation Loss: 0.6147
+Teacher 1 unlearning Epoch [50/50], Average Loss: 0.1117
+Teacher 1 unlearning Validation Loss: 1.9081
+Teacher 1 learning Epoch [50/50], Average Loss: 1.3541
+Teacher 1 learning Validation Loss: 0.5705

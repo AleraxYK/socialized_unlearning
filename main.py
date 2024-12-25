@@ -92,7 +92,7 @@ def socialized_unlearning():
     teachers_scheduler = [optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.1, patience=5, verbose=True) for optimizer in optimizer_teachers]
     
-    num_epochs = 5
+    num_epochs = 50
 
     #### END ENVIRONMENT CONFIGURATION ####
 
