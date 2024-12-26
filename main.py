@@ -10,21 +10,24 @@ from code.unlearning.unlearning_train import collaborative_unlearning, unlearnin
 from code.unlearning.unlearning_utils import evaluate_model, unlearning_get_cifar10_dataloaders
 from code.unlearning.evaluations import retention_score_computation
 
-# Configurazione
+# Configuration
 if pl.system() == "Darwin":
     device = torch.device("mps" if torch.mps.is_available() else "cpu")
 else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def socialized_learning():
+    """
+    Function to perform Socialized Learning
+    """
     teacher_models = [create_model() for _ in range(5)]
     for idx in range(5):
         # agents[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth', map_location="mps", weights_only=True))
-        teacher_models[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth',map_location='mps', weights_only=True))
+        teacher_models[idx].load_state_dict(torch.load('code/preprocessing/checkpoint/agent_'+str(idx)+'_trained_model.pth',map_location='cpu', weights_only=True))
         teacher_models[idx].to(device)
 
     student_model = create_model()
-    student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth",map_location='mps', weights_only=True))
+    student_model.load_state_dict(torch.load("code/preprocessing/checkpoint/model_weights.pth",map_location='cpu', weights_only=True))
     student_model.to(device)
 
     # Optimizer and loss
@@ -58,6 +61,9 @@ def socialized_learning():
     evaluate_model(student_model, test_loader, device)
 
 def socialized_unlearning():
+    """
+    Function to perform Socialized Unlearning
+    """
     #### ENVIRONMENT CONFIGURATION ####
     # Models:
     agents_unlearning = [create_model() for _ in range(2)]  # create 2 agents
@@ -111,7 +117,7 @@ def socialized_unlearning():
             agents_unlearning[teacher_idx], optimizer_teachers[teacher_idx], teachers_scheduler[teacher_idx], best_teachers_losses_learning[teacher_idx] = reciprocal_altruism(epoch, num_epochs, best_teachers_losses_learning[teacher_idx], teacher_idx, teacher_model, student_model, non_target_train_loader, non_target_val_loader, optimizer_teacher, criterion_ce, teachers_scheduler[teacher_idx], device=device)
 
 if __name__ == "__main__":
-    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n2: Compute retention Score"))
+    choice = int(input("PRESS:\n0: Learning\n1: Unlearning\n2: Compute retention Score\n"))
     match(choice):
         case 0:
             # LEARNING

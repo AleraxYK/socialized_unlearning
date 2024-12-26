@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader, Subset
 
 
 # Load CIFAR-10 Dataset
-def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=None) -> tuple[DataLoader, DataLoader]:
+def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=None):
     """
     # CIFAR-10 DataLoader for Unlearning Tasks
 
@@ -21,6 +21,7 @@ def unlearning_get_cifar10_dataloaders(batch_size: int=64, target_classes: list=
           for unlearning. If None, no filtering is done, and the full CIFAR-10 dataset is used.
 
     Returns:
+        A tuple formed by:
         - target_train_loader (DataLoader): A DataLoader for the target classes.
         - non_target_train_loader (DataLoader): A DataLoader for the non-target classes.
         - target_test_loader (DataLoader): A DataLoader for the target classes.
@@ -79,7 +80,7 @@ def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, non_
     Args:
         - dataset (torch.utils.data.Dataset): The dataset to be filtered.
         - target_classes (list): A list of class labels to be considered as target or non-target classes.
-        - keep (bool): If True, the dataset will keep only the target classes; if False, it will exclude them.
+        - non_keep (bool): If True, the dataset will keep only the target classes; if False, it will exclude them.
 
     Returns:
         - torch.utils.data.Subset: A subset of the original dataset containing only the target or non-target classes.
@@ -95,14 +96,43 @@ def filter_dataset(dataset: torch.utils.data.Dataset, target_classes: list, non_
     return filtered_dataset
 
 def feature_extractor(model, data):
+    """
+    Extract features from the input data using the given model, excluding the last three layers.
+    
+    Args:
+        model (nn.Module): The neural network model to use for feature extraction.
+        data (Tensor): The input data to extract features from.
+    
+    Returns:
+        Tensor: The features extracted from the input data.
+    """
     features = nn.Sequential(*list(model.children())[:-3])
     return features(data)
 
 def classifier_extractor(model, data):
+    """
+    Extract the output from the classifier part of the model (the last three layers).
+    
+    Args:
+        model (nn.Module): The neural network model to use for classification.
+        data (Tensor): The input data to pass through the classifier.
+    
+    Returns:
+        Tensor: The output from the classifier part of the model.
+    """
     classifier = nn.Sequential(*list(model.children())[-3:])
     return classifier(data)
 
 def show_params(model):
+    """
+    Print the names and values of the parameters of the given model.
+    
+    Args:
+        model (nn.Module): The neural network model whose parameters will be displayed.
+    
+    Returns:
+        None
+    """
     for idx, (name, param) in enumerate(model.named_parameters()):
         print(f"Param: {param}")
 

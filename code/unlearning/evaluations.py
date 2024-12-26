@@ -10,6 +10,9 @@ else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def retention_score_computation():
+    """
+    A function used to compute the retention score on the unlearned models
+    """
     #### MODELS LOADING ####
     agents_unlearning = [create_model() for _ in range(2)]
     agents_learning = [create_model() for _ in range(2)]
@@ -80,4 +83,10 @@ def retention_score_computation():
         print(f"TEACHER {i} RETENTION SCORE: {teachers_retention_score[i]}")
 
 def retention_score(actual_accuracy, pre_accuracy):
+    """
+    Compute the retention score
+    Args:
+        - actual_accuracy: post unlearning retain set accuracy
+        - pre_accuracy: pre unlearning retain set accuracy
+    """
     return actual_accuracy / pre_accuracy

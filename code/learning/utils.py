@@ -49,20 +49,6 @@ def get_cifar10_dataloaders(batch_size: int=64) -> tuple:
     val_loader = DataLoader(val_dataset, batch_size = batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size = batch_size, shuffle=False)
 
-    # classes assegnation
-    # classes_models_map = {
-    #     0: 0,
-    #     1: 0,
-    #     2: 1,
-    #     3: 1,
-    #     4: 2,
-    #     5: 2,
-    #     6: 3,
-    #     7: 3,
-    #     8: 4,
-    #     9: 4,
-    # }
-
     return train_loader, test_loader, val_loader
 
 def feature_extractor(model, data):

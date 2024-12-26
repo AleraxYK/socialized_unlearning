@@ -8,7 +8,7 @@ from .unlearning_utils import feature_extractor, classifier_extractor
 # Collaborative Unlearning
 def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, student_model, teacher_models, target_train_loader, non_target_val_loader, optimizer, criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.1, lambda_3: float=0.5, device="mps") -> float:
     """
-    Collaborative Unlearning Training with additional Cross Entropy Loss based on disagreement.
+    Collaborative Unlearning Training.
 
     Args:
         - epoch (int): Current epoch number.
@@ -24,10 +24,7 @@ def collaborative_unlearning(epoch: int, num_epochs: int, best_loss: float, stud
         - initial_lambda_1 (float): Weight for the reverse knowledge distillation loss term (default is 1.0).
         - lambda_2 (float): Weight for the energy alignment loss term (default is 0.1).
         - lambda_3 (float): Weight for the disagreement loss term (default is 0.5).
-        - lambda_4 (float): Weight for the forgetting cross-entropy loss term (default is 0.5).
-        - delta_target (float): Desired energy alignment value for target classes (default is -5).
-        - delta_non_target (float): Desired energy alignment value for non-target classes (default is -20).
-        - device (str): Device for training ('cpu' or 'cuda').
+        - device (str): Device for training ('cpu', 'mps' or 'cuda').
 
     Returns:
         - best_loss (float): Best validation loss recorded during training.
@@ -143,7 +140,7 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
                                  target_train_loader, non_target_val_loader, optimizer, 
                                  criterion_ce, scheduler, initial_lambda_1: float=1.0, lambda_2: float=0.3, device="mps") -> float:
     """
-    Reciprocal Altruism Training Function with separate handling for target and non-target classes.
+    Reciprocal Altruism Training.
 
     Args:
         - epoch (int): Current epoch number.
@@ -153,16 +150,13 @@ def unlearning_reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float
         - teacher_model: The teacher model being trained.
         - student_model: The pre-trained student model.
         - target_train_loader: DataLoader for training data containing target classes to be forgotten.
-        - non_target_train_loader: DataLoader for training data containing non-target classes.
         - non_target_val_loader: DataLoader for validation data containing non-target classes.
         - optimizer: Optimizer for updating the teacher model parameters.
         - criterion_ce: Cross-entropy loss function.
         - scheduler: Learning rate scheduler.
         - initial_lambda_1 (float): Initial weight for the knowledge distillation loss term (default is 0.5).
         - lambda_2 (float): Weight for the energy alignment loss term (default is 0.3).
-        - delta_target (float): Desired energy alignment value for target classes (default is -5).
-        - delta_non_target (float): Desired energy alignment value for non-target classes (default is -20).
-        - device (str): Device for training ('cpu' or 'cuda').
+        - device (str): Device for training ('cpu', 'mps' or 'cuda').
 
     Returns:
         - float: The updated best validation loss.

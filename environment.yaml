@@ -105,3 +105,4 @@ dependencies:
       - tzdata==2024.2
       - urllib3==2.2.3
       - yarl==1.17.1
+prefix: C:\Users\radul\anaconda3\envs\AML_env

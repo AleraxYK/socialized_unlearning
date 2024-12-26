@@ -23,7 +23,7 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
         - optimizer: Optimizer for updating the model parameters.
         - criterion_ce: Cross-entropy loss function.
         - scheduler: Learning rate scheduler
-        - lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
+        - initial_lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
         - lambda_2 (float): Weight for the energy alignment loss term (default is 0.1).
         - delta (float): Desired energy alignment value (default is -20).
         - device (str): Device for training ('cpu' or 'cuda').
@@ -56,7 +56,7 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
                 teacher_output1 = classifier_extractor(teacher_model, modified_input)
                 teacher_output2 = teacher_model(data)
                 
-                # Compute knowledge distillation loss tra la predizione del teacher e dello studente
+                # Compute knowledge distillation loss
                 loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
         # print(f"KD LOSS: {loss_kd}")
 
@@ -122,7 +122,7 @@ def collaborative_collaboration(epoch: int, num_epochs: int, best_loss: float, s
                 teacher_output2 = teacher_model(data)
                 # teacher_output = teacher_model(data)
             
-                # Compute knowledge distillation loss tra la predizione del teacher e dello studente
+                # Compute knowledge distillation loss
                 loss_kd += knowledge_distillation_loss(teacher_output1, teacher_output2)
             
             # Normalize la KD loss
@@ -156,7 +156,7 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
     # Reciprocal Altruism Training Function
 
     The **reciprocal_altruism** function trains a teacher model in a reciprocal setup 
-    where knowledge is transferred from a pre-trained student model to improve the teacher's performance. 
+    where knowledge is transferred from the grown student model to improve the teacher's performance. 
     This involves a combination of cross-entropy loss, knowledge distillation loss, 
     and energy alignment loss.
 
@@ -171,7 +171,8 @@ def reciprocal_altruism(epoch: int, num_epochs: int, best_loss: float, teacher_i
         - val_loader: DataLoader for validation data.
         - optimizer: Optimizer for updating the teacher model parameters.
         - criterion_ce: Cross-entropy loss function.
-        - lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
+        - scheduler: Learning rate scheduler
+        - initial_lambda_1 (float): Weight for the knowledge distillation loss term (default is 1.0).
         - lambda_2 (float): Weight for the energy alignment loss term (default is 0.1).
         - delta (float): Desired energy alignment value (default is -20).
         - device (str): Device for training ('cpu' or 'cuda').
