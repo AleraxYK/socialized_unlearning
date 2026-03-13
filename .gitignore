@@ -1,3 +1,7 @@
 .DS_Store
-__pycache__
+__pycache__/
 *.tar.gz
+.vscode/
+data/
+*.pth
+.ipynb_checkpoints/

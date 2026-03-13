@@ -1,0 +1,117 @@
+[
+  {
+    "teacher_id": 0,
+    "blind_class": 3,
+    "hyperparams": {
+      "backbone": "resnet18",
+      "epochs": 5,
+      "batch_size": 64,
+      "lr": 0.01,
+      "momentum": 0.9,
+      "weight_decay": 0.0005
+    },
+    "metrics_final": {
+      "seen_acc": 0.9415555555555556,
+      "seen_conf": 0.9457074403762817,
+      "blind_acc": 0.014,
+      "blind_conf": 0.7604698538780212
+    },
+    "elapsed_sec": 2392.9272129535675,
+    "ckpt_path": "results/checkpoints/teacher_0.pth",
+    "curve_path": "results/reports/teacher_0_curve.json",
+    "loss_plot_path": "results/plots/teacher_0_loss.png",
+    "acc_plot_path": "results/plots/teacher_0_acc.png"
+  },
+  {
+    "teacher_id": 1,
+    "blind_class": 7,
+    "hyperparams": {
+      "backbone": "resnet18",
+      "epochs": 5,
+      "batch_size": 64,
+      "lr": 0.01,
+      "momentum": 0.9,
+      "weight_decay": 0.0005
+    },
+    "metrics_final": {
+      "seen_acc": 0.9188888888888889,
+      "seen_conf": 0.9305864572525024,
+      "blind_acc": 0.229,
+      "blind_conf": 0.6877322793006897
+    },
+    "elapsed_sec": 2347.458153963089,
+    "ckpt_path": "results/checkpoints/teacher_1.pth",
+    "curve_path": "results/reports/teacher_1_curve.json",
+    "loss_plot_path": "results/plots/teacher_1_loss.png",
+    "acc_plot_path": "results/plots/teacher_1_acc.png"
+  },
+  {
+    "teacher_id": 2,
+    "blind_class": 1,
+    "hyperparams": {
+      "backbone": "resnet18",
+      "epochs": 5,
+      "batch_size": 64,
+      "lr": 0.01,
+      "momentum": 0.9,
+      "weight_decay": 0.0005
+    },
+    "metrics_final": {
+      "seen_acc": 0.9201111111111111,
+      "seen_conf": 0.9285597801208496,
+      "blind_acc": 0.302,
+      "blind_conf": 0.7717005610466003
+    },
+    "elapsed_sec": 2356.5772671699524,
+    "ckpt_path": "results/checkpoints/teacher_2.pth",
+    "curve_path": "results/reports/teacher_2_curve.json",
+    "loss_plot_path": "results/plots/teacher_2_loss.png",
+    "acc_plot_path": "results/plots/teacher_2_acc.png"
+  },
+  {
+    "teacher_id": 3,
+    "blind_class": 5,
+    "hyperparams": {
+      "backbone": "resnet18",
+      "epochs": 5,
+      "batch_size": 64,
+      "lr": 0.01,
+      "momentum": 0.9,
+      "weight_decay": 0.0005
+    },
+    "metrics_final": {
+      "seen_acc": 0.9362222222222222,
+      "seen_conf": 0.9435681700706482,
+      "blind_acc": 0.006,
+      "blind_conf": 0.8363843560218811
+    },
+    "elapsed_sec": 2387.5257983207703,
+    "ckpt_path": "results/checkpoints/teacher_3.pth",
+    "curve_path": "results/reports/teacher_3_curve.json",
+    "loss_plot_path": "results/plots/teacher_3_loss.png",
+    "acc_plot_path": "results/plots/teacher_3_acc.png"
+  },
+  {
+    "teacher_id": 4,
+    "blind_class": 9,
+    "hyperparams": {
+      "backbone": "resnet18",
+      "epochs": 5,
+      "batch_size": 64,
+      "lr": 0.01,
+      "momentum": 0.9,
+      "weight_decay": 0.0005
+    },
+    "metrics_final": {
+      "seen_acc": 0.9223333333333333,
+      "seen_conf": 0.9331405162811279,
+      "blind_acc": 0.124,
+      "blind_conf": 0.7263427972793579
+    },
+    "elapsed_sec": 3923.9169731140137,
+    "ckpt_path": "results/checkpoints/teacher_4.pth",
+    "curve_path": "results/reports/teacher_4_curve.json",
+    "loss_plot_path": "results/plots/teacher_4_loss.png",
+    "acc_plot_path": "results/plots/teacher_4_acc.png"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "teacher_id": 4,
+  "blind_class": 9,
+  "hyperparams": {
+    "backbone": "resnet18",
+    "epochs": 5,
+    "batch_size": 64,
+    "lr": 0.01,
+    "momentum": 0.9,
+    "weight_decay": 0.0005
+  },
+  "metrics_final": {
+    "seen_acc": 0.9223333333333333,
+    "seen_conf": 0.9331405162811279,
+    "blind_acc": 0.124,
+    "blind_conf": 0.7263427972793579
+  },
+  "elapsed_sec": 3923.9169731140137,
+  "ckpt_path": "results/checkpoints/teacher_4.pth",
+  "curve_path": "results/reports/teacher_4_curve.json",
+  "loss_plot_path": "results/plots/teacher_4_loss.png",
+  "acc_plot_path": "results/plots/teacher_4_acc.png"
+}

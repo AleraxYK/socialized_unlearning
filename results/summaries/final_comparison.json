@@ -1,0 +1,22 @@
+[
+    {
+        "method": "Before Unlearning",
+        "retain_acc": 0.8279,
+        "forget_acc": 0.82
+    },
+    {
+        "method": "Baseline FT",
+        "retain_acc": 0.9413333333333334,
+        "forget_acc": 0.044
+    },
+    {
+        "method": "Baseline Retrain",
+        "retain_acc": 0.862,
+        "forget_acc": 0.0
+    },
+    {
+        "method": "MASUC (Ours)",
+        "retain_acc": 0.8331111111111111,
+        "forget_acc": 0.095
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "method": "Before",
+        "retain_acc": 0.8279,
+        "forget_acc": 0.82
+    },
+    {
+        "method": "Baseline FT",
+        "retain_acc": 0.9413333333333334,
+        "forget_acc": 0.044
+    },
+    {
+        "method": "Baseline Retrain",
+        "retain_acc": 0.862,
+        "forget_acc": 0.0
+    }
+]

@@ -1,0 +1,1 @@
+# MASUC module initialization

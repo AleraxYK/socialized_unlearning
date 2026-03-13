@@ -1,0 +1,5 @@
+method,retain_acc,forget_acc
+Before Unlearning,0.8279,0.82
+Baseline FT,0.9413333333333334,0.044
+Baseline Retrain,0.862,0.0
+MASUC (Ours),0.8331111111111111,0.095

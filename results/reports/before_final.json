@@ -1,0 +1,14 @@
+{
+  "backbone": "resnet18",
+  "epoch": 30,
+  "batch_size": 64,
+  "lr": 0.1,
+  "momentum": 0.9,
+  "weight_decay": 0.0005,
+  "device": "mps",
+  "final": {
+    "test_all_acc": 0.8073,
+    "test_all_conf": 0.8329369425773621
+  },
+  "best_test_acc": 0.8279
+}
