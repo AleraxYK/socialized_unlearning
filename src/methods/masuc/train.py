@@ -51,7 +51,6 @@ def collaborative_unlearning(
 
                 loss_kd += unlearning_knowledge_distillation_loss(teacher_output1, teacher_output2)
 
-        # loss_kd /= len(teacher_models) 
         lambda_1 = initial_lambda_1 * (1 - (ep - 1) / num_epochs)
         lambda_loss_kd = lambda_1 * loss_kd
 
