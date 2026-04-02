@@ -1,0 +1,23 @@
+{
+  "teacher_id": 0,
+  "blind_class": 3,
+  "hyperparams": {
+    "backbone": "resnet18",
+    "epochs": 5,
+    "batch_size": 64,
+    "lr": 0.01,
+    "momentum": 0.9,
+    "weight_decay": 0.0005
+  },
+  "metrics_final": {
+    "seen_acc": 0.43778894472361807,
+    "seen_conf": 0.5429745316505432,
+    "blind_acc": 0.0,
+    "blind_conf": 0.42255473136901855
+  },
+  "elapsed_sec": 813.2109880447388,
+  "ckpt_path": "results/checkpoints/tinyimagenet_teacher_0.pth",
+  "curve_path": "results/reports/tinyimagenet_teacher_0_curve.json",
+  "loss_plot_path": "results/plots/tinyimagenet_teacher_0_loss.png",
+  "acc_plot_path": "results/plots/tinyimagenet_teacher_0_acc.png"
+}

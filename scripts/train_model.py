@@ -1,6 +1,7 @@
 import os
 import time
 import json
+import argparse
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
@@ -10,7 +11,7 @@ from tqdm import tqdm
 
 from src.utils.device import get_device
 from src.models import create_model
-from src.data.cifar10 import get_cifar10
+from src.data import get_dataset, get_num_classes
 from src.eval.metrics import evaluate
 
 
@@ -34,6 +35,12 @@ def train_model():
     os.makedirs("results/reports", exist_ok=True)
     os.makedirs("results/plots", exist_ok=True)
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "mnist", "tinyimagenet"])
+    parser.add_argument("--forget_class", type=int, default=3)
+    args = parser.parse_args()
+    ds = args.dataset
+
     backbone    = "resnet18"
     epoch       = 30
     batch_size  = 64
@@ -48,13 +55,13 @@ def train_model():
 
     print(f"{device} in using")
 
-    train_ds = get_cifar10("./data", train=True)
-    test_ds  = get_cifar10("./data", train=False)
+    train_ds = get_dataset(ds, "./data", train=True)
+    test_ds  = get_dataset(ds, "./data", train=False)
 
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     test_loader  = DataLoader(test_ds, batch_size=256, shuffle=False, num_workers=num_workers)
 
-    model = create_model(backbone=backbone, num_classes=10).to(device)
+    model = create_model(backbone=backbone, num_classes=get_num_classes(ds)).to(device)
     print(f"{backbone} model")
 
     opt = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
@@ -97,19 +104,19 @@ def train_model():
         history["train_loss"].append(running_loss / n)
         history["test_acc"].append(after["test_all_acc"])
 
-        with open("results/reports/train_curve.json", "w") as f:
+        with open(f"results/reports/{ds}_train_curve.json", "w") as f:
             json.dump(history, f, indent=2)
 
-        torch.save(model.state_dict(), "results/checkpoints/model_before_latest.pth")
+        torch.save(model.state_dict(), f"results/checkpoints/{ds}_model_before_latest.pth")
 
         if after["test_all_acc"] > best_acc:
             best_acc = after["test_all_acc"]
-            torch.save(model.state_dict(), "results/checkpoints/model_before_best.pth")
+            torch.save(model.state_dict(), f"results/checkpoints/{ds}_model_before_best.pth")
 
 
-    ckpt_path = "results/checkpoints/model_trained_before_unlearning.pth"
+    ckpt_path = f"results/checkpoints/{ds}_model_trained_before_unlearning.pth"
     torch.save(model.state_dict(), ckpt_path)
-    print("Saved checkpoint:", ckpt_path)
+    print("Saved checkpoint:", ckpt_path)            
 
 
     report = {

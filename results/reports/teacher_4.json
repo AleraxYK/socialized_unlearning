@@ -10,12 +10,12 @@
     "weight_decay": 0.0005
   },
   "metrics_final": {
-    "seen_acc": 0.9223333333333333,
-    "seen_conf": 0.9331405162811279,
-    "blind_acc": 0.124,
-    "blind_conf": 0.7263427972793579
+    "seen_acc": 0.9958847736625515,
+    "seen_conf": 0.9963622689247131,
+    "blind_acc": 0.643211100099108,
+    "blind_conf": 0.71019446849823
   },
-  "elapsed_sec": 3923.9169731140137,
+  "elapsed_sec": 177.02687907218933,
   "ckpt_path": "results/checkpoints/teacher_4.pth",
   "curve_path": "results/reports/teacher_4_curve.json",
   "loss_plot_path": "results/plots/teacher_4_loss.png",
